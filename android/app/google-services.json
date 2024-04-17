@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "848047799414",
+    "project_id": "unicourse-95fad",
+    "storage_bucket": "unicourse-95fad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:848047799414:android:5ac37779cddb681e9b7357",
+        "android_client_info": {
+          "package_name": "com.example.uni_course"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCz4PUl58mOzTxWwADBxyOwHfLCDhj0cM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
