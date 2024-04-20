@@ -50,7 +50,7 @@ class _MyAppState extends ConsumerState<MyApp> {
           data: (data) => MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: 'UniCourse',
-            theme: Pallete.darkModeAppTheme,
+            theme: ref.watch(themeNotifierProvider),
             routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
               //render initial screen based on the existence of user data (logged in or not)
               if (data != null) {

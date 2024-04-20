@@ -1,30 +1,41 @@
 import 'dart:io';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
 import 'package:uni_course/core/constants/constants.dart';
 import 'package:uni_course/core/utils.dart';
-import 'package:uni_course/features/community/controller/community_controller.dart';
-import 'package:uni_course/models/community_model.dart';
+import 'package:uni_course/features/auth/controller/auth_controller.dart';
+import 'package:uni_course/features/user_profile/controller/user_profile_controller.dart';
 import 'package:uni_course/theme/pallete.dart';
 
-class EditCommunityScreen extends ConsumerStatefulWidget {
-  final String name;
-  const EditCommunityScreen({super.key, required this.name});
+class EditProfileScreen extends ConsumerStatefulWidget {
+  final String uid;
+  const EditProfileScreen({super.key, required this.uid});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
-      _EditCommunityScreenState();
+      _EditProfileScreenState();
 }
 
-class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
+class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
   File? bannerFile;
   File? profileFile;
+  late TextEditingController nameContoller;
+
+  @override
+  void initState() {
+    nameContoller = TextEditingController(text: ref.read(userProvider)!.name);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    nameContoller.dispose();
+    super.dispose();
+  }
 
   void selectBannerImage() async {
     final result = await pickImage();
@@ -46,36 +57,34 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
     }
   }
 
-  void save(Community community) {
-    ref.read(communityControllerProvider.notifier).editCommunity(
+  void save() {
+    ref.read(userProfileControllerProvider.notifier).editUser(
         profileFile: profileFile,
         bannerFile: bannerFile,
-        community: community,
-        context: context);
+        context: context,
+        name: nameContoller.text);
   }
 
   @override
   Widget build(BuildContext context) {
-    final _isLoading = ref.watch(communityControllerProvider);
     final currentTheme = ref.watch(themeNotifierProvider);
-
-    return ref.watch(getCommunityByNameProvider(widget.name)).when(
+    final _isLoading = ref.watch(userProfileControllerProvider);
+    return ref.watch(getUserDataProvider(widget.uid)).when(
           data: (data) => Scaffold(
-            backgroundColor: Pallete.darkModeAppTheme.backgroundColor,
+            // backgroundColor: Pallete.darkModeAppTheme.backgroundColor,
+            backgroundColor: currentTheme.colorScheme.background,
             appBar: AppBar(
-              title: const Text("Edit community"),
+              title: const Text("Edit profile"),
               centerTitle: false,
               actions: [
                 TextButton(
-                  onPressed: () {
-                    save(data);
-                  },
+                  onPressed: save,
                   child: const Text("save"),
                 ),
               ],
             ),
             body: _isLoading
-                ? const Center(child: Loader())
+                ? const Loader()
                 : Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -94,23 +103,24 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                                   color: Pallete.darkModeAppTheme.textTheme
                                       .bodyMedium!.color!,
                                   child: Container(
-                                      width: double.infinity,
-                                      height: 150,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: bannerFile != null
-                                          ? Image.file(bannerFile!)
-                                          : data.banner.isEmpty ||
-                                                  data.banner ==
-                                                      Constants.bannerDefault
-                                              ? const Center(
-                                                  child: Icon(
-                                                    Icons.camera_alt_outlined,
-                                                    size: 40,
-                                                  ),
-                                                )
-                                              : Image.network(data.banner)),
+                                    width: double.infinity,
+                                    height: 150,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: bannerFile != null
+                                        ? Image.file(bannerFile!)
+                                        : data.banner.isEmpty ||
+                                                data.banner ==
+                                                    Constants.bannerDefault
+                                            ? const Center(
+                                                child: Icon(
+                                                  Icons.camera_alt_outlined,
+                                                  size: 40,
+                                                ),
+                                              )
+                                            : Image.network(data.banner),
+                                  ),
                                 ),
                               ),
                               Positioned(
@@ -126,7 +136,7 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                                         )
                                       : CircleAvatar(
                                           backgroundImage:
-                                              NetworkImage(data.avatar),
+                                              NetworkImage(data.profilePic),
                                           radius: 32,
                                         ),
                                 ),
@@ -134,8 +144,22 @@ class _EditCommunityScreenState extends ConsumerState<EditCommunityScreen> {
                             ],
                           ),
                         ),
+                        TextField(
+                          controller: nameContoller,
+                          decoration: InputDecoration(
+                            filled: true,
+                            hintText: "name",
+                            focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    const BorderSide(color: Colors.blue),
+                                borderRadius: BorderRadius.circular(10)),
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(18),
+                          ),
+                        )
                       ],
-                    )),
+                    ),
+                  ),
           ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),
           loading: () => const Loader(),

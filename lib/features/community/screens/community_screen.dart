@@ -6,6 +6,7 @@ import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/features/community/controller/community_controller.dart';
+import 'package:uni_course/models/community_model.dart';
 
 class CommunityScreen extends ConsumerWidget {
   final String name;
@@ -13,6 +14,12 @@ class CommunityScreen extends ConsumerWidget {
 
   void navigateToModTools(BuildContext context) {
     Routemaster.of(context).push('/mod-tools/$name');
+  }
+
+  void joinCommunity(WidgetRef ref, Community community, BuildContext context) {
+    ref
+        .read(communityControllerProvider.notifier)
+        .joinCommunity(community, context);
   }
 
   @override
@@ -84,7 +91,9 @@ class CommunityScreen extends ConsumerWidget {
                                               BorderRadius.circular(20),
                                         ),
                                       ),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        joinCommunity(ref, data, context);
+                                      },
                                       child: Text(
                                           data.members.contains(user.uid)
                                               ? "joined"

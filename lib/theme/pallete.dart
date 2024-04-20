@@ -1,4 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+//provider to control the theme
+final themeNotifierProvider =
+    StateNotifierProvider<ThemeNotifier, ThemeData>((ref) {
+  return ThemeNotifier();
+});
 
 class Pallete {
   //color schemes:
@@ -59,4 +67,51 @@ class Pallete {
       colorScheme: ThemeData.light()
           .colorScheme
           .copyWith(background: Pallete.whiteColor));
+}
+
+//to toggle between dark/light mode
+class ThemeNotifier extends StateNotifier<ThemeData> {
+  ThemeMode _mode;
+  //initial theme is dark mode
+  ThemeNotifier({ThemeMode mode = ThemeMode.dark})
+      : _mode = mode,
+        super(Pallete.darkModeAppTheme) {
+    //whenever the constuctor runs, call getTheme
+    getTheme();
+  }
+
+  //getter to get themeMode now:
+  ThemeMode get mode => _mode;
+
+  //to get the theme as soon as the app starts
+  void getTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //Reads a value from persistent storage, with the key 'theme'
+    final theme = prefs.getString('theme');
+    if (theme == 'light') {
+      _mode = ThemeMode.light;
+      state = Pallete.lightModeAppTheme;
+    } else {
+      _mode = ThemeMode.dark;
+      state = Pallete.darkModeAppTheme;
+    }
+  }
+
+  //to use in the check button in the side drawer
+  //is async because we're use shared preferences package, which stores data in the device memory
+  void toggleTheme() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    //if it's dark mode, switch to light mode
+    if (_mode == ThemeMode.dark) {
+      _mode = ThemeMode.light;
+      state = Pallete.lightModeAppTheme;
+      prefs.setString('theme', 'light');
+      // print(_mode);
+    } else {
+      _mode = ThemeMode.dark;
+      state = Pallete.darkModeAppTheme;
+      prefs.setString('theme', 'dark');
+      // print(_mode);
+    }
+  }
 }

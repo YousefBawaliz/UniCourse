@@ -113,4 +113,43 @@ class CommunityRepository {
       },
     );
   }
+
+  //function to join a community, we used FieldValue.arrayUnion to make sure that we update the value field, not rewrite it
+  FutureVoid joinCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members': FieldValue.arrayUnion([userId])
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  //same as joinCommunity function, but we used FieldValue.arrayRemove instead
+  FutureVoid leaveCommunity(String communityName, String userId) async {
+    try {
+      return right(_communities.doc(communityName).update({
+        'members': FieldValue.arrayRemove([userId])
+      }));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureVoid addMods(String communityName, List<String> uids) async {
+    try {
+      return right(
+        //note that we didn't use FieldValue.arrayUnion here, because we are adding a new whole list.
+        _communities.doc(communityName).update({'mods': uids}),
+      );
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
 }
