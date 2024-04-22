@@ -4,9 +4,14 @@ import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/theme/pallete.dart';
 
-class ProfileDrawer extends ConsumerWidget {
+class ProfileDrawer extends ConsumerStatefulWidget {
   const ProfileDrawer({super.key});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _ProfileDrawerState();
+}
+
+class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
   void logOut(WidgetRef ref) {
     ref.read(authControllerProvider.notifier).logout();
   }
@@ -19,8 +24,14 @@ class ProfileDrawer extends ConsumerWidget {
     ref.read(themeNotifierProvider.notifier).toggleTheme();
   }
 
+  Future<void> waitOneSecond() async {
+    await Future.delayed(const Duration(seconds: 1));
+    // Code to be executed after 1 second delay
+    print('One second has passed!');
+  }
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
     return Drawer(
       child: SafeArea(
@@ -60,13 +71,14 @@ class ProfileDrawer extends ConsumerWidget {
             Switch.adaptive(
               value: ref.watch(themeNotifierProvider.notifier).mode ==
                   ThemeMode.dark,
+              //todo: switch isn't changing.
               onChanged: (value) {
-                toggleTheme(ref);
-                print(ref.watch(themeNotifierProvider.notifier).mode);
-                print(value);
+                setState(() {
+                  toggleTheme(ref);
+                });
+
+                ref.watch(themeNotifierProvider.notifier).mode;
               },
-              // value: ref.watch(themeNotifierProvider.notifier).mode == ThemeMode.dark,
-              // onChanged: (val) => toggleTheme(ref),
             ),
           ],
         ),

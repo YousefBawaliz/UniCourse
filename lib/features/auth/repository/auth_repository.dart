@@ -15,9 +15,10 @@ import 'package:uni_course/models/user_model.dart';
 final authRepositoryProvider = Provider(
   (ref) {
     return AuthRepository(
-        firestore: ref.read(fireStoreProvider),
-        auth: ref.read(authProvider),
-        googleSignIn: ref.read(googleSignInProvider));
+      firestore: ref.read(fireStoreProvider),
+      auth: ref.read(authProvider),
+      googleSignIn: ref.read(googleSignInProvider),
+    );
   },
 );
 

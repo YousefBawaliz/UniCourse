@@ -9,6 +9,7 @@ import 'package:uni_course/features/community/screens/edit_community_screen.dart
 import 'package:uni_course/features/community/screens/mod_tools_screen.dart';
 import 'package:uni_course/features/home/screens/home_screen.dart';
 import 'package:uni_course/features/auth/sceen/login_screen.dart';
+import 'package:uni_course/features/post/screens/add_post_type_screen.dart';
 import 'package:uni_course/features/user_profile/screens/edit_profile_screen.dart';
 import 'package:uni_course/features/user_profile/screens/user_profile_screen.dart';
 
@@ -32,4 +33,6 @@ final loggedInRoute = RouteMap(routes: {
       MaterialPage(child: UserProfileScreen(uid: route.pathParameters['uid']!)),
   '/edit-profile/:uid': (route) =>
       MaterialPage(child: EditProfileScreen(uid: route.pathParameters['uid']!)),
+  '/add-post/:type': (route) => MaterialPage(
+      child: AddPostTypeScreen(type: route.pathParameters['type']!)),
 });

@@ -1,3 +1,6 @@
+import 'package:uni_course/features/feed/feed_screen.dart';
+import 'package:uni_course/features/post/screens/add_post_screen.dart';
+
 class Constants {
   // static const logoPath = 'assets/images/logo.png';
   // static const loginEmote = 'assets/images/loginEmote.png';
@@ -13,4 +16,10 @@ class Constants {
 
   static const avatarDefault2 =
       'https://w1.pngwing.com/pngs/536/984/png-transparent-book-logo-book-design-childrens-literature-cartoon-page-text-orange-line.png';
+
+  //tabs for bottomNavigationBar
+  static const tabWidgets = [
+    FeedScreen(),
+    AddPostScreen(),
+  ];
 }
