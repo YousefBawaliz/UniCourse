@@ -5,6 +5,7 @@ import 'package:uni_course/core/constants/firebase_constants.dart';
 import 'package:uni_course/core/failure.dart';
 import 'package:uni_course/core/providers/firebase_providers.dart';
 import 'package:uni_course/core/type_defs.dart';
+import 'package:uni_course/models/community_model.dart';
 import 'package:uni_course/models/post_model.dart';
 
 //provider to be provided to post_controller
@@ -43,5 +44,27 @@ class PostRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<Post>> fetchUserPosts(List<Community> communities) {
+    //we're getting posts in communities where the community name matches the communities in the argument
+    //sorted by date in descending order
+    return _posts
+        //where Creates and returns a new [Query] with additional filter on specified [field]. [field] refers to a field in a document.
+        .where('communityName',
+            whereIn: communities.map((e) => e.name).toList())
+        .orderBy('createdAt', descending: true)
+        .snapshots() //get snapshots of the data
+        .map(
+          //map through the QuerySnapshots
+          (event) => event
+              .docs //Gets a list of all the documents included in this snapshot.
+              .map(
+                //map through the Documents from Snapshot
+                //convert each document snapshot into a Post data model
+                (e) => Post.fromMap(e.data() as Map<String, dynamic>),
+              )
+              .toList(),
+        );
   }
 }
