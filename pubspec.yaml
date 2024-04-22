@@ -49,6 +49,7 @@ dependencies:
   shared_preferences: ^2.2.3
   uuid: ^4.4.0
   any_link_preview: ^3.0.2
+  rxdart_ext: ^0.2.9
 
 dev_dependencies:
   flutter_test:

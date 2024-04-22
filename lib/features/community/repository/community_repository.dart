@@ -87,39 +87,19 @@ class CommunityRepository {
     }
   }
 
-  //to return results of a search.
-  //query is whatever the user is typing
+  // to return results of a search.
+  // query is whatever the user is typing
   // i truly don't understand this query algorithm, i just snatched it from a youtube tutorial, but it works
-  // Stream<List<Community>> searchCommunity(String query) {
-  //   return _communities
-  //       .where(
-  //         'name',
-  //         isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
-  //         isLessThan: query.isEmpty
-  //             ? null
-  //             : query.substring(0, query.length - 1) +
-  //                 String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
-  //       )
-  //       .snapshots()
-  //       .map(
-  //     (event) {
-  //       final List<Community> communities = [];
-  //       for (var community in event.docs) {
-  //         communities.add(
-  //           Community.fromMap(community.data() as Map<String, dynamic>),
-  //         );
-  //       }
-  //       return communities;
-  //     },
-  //   );
-  // }
 
   Stream<List<Community>> searchCommunity(String query) {
     return _communities
         .where(
           'name',
-          isGreaterThanOrEqualTo: query,
-          isLessThan: query + 'z',
+          isGreaterThanOrEqualTo: query.isEmpty ? 0 : query,
+          isLessThan: query.isEmpty
+              ? null
+              : query.substring(0, query.length - 1) +
+                  String.fromCharCode(query.codeUnitAt(query.length - 1) + 1),
         )
         .snapshots()
         .map(
@@ -134,6 +114,27 @@ class CommunityRepository {
       },
     );
   }
+
+  // Stream<List<Community>> searchCommunity(String query) {
+  //   return _communities
+  //       .where(
+  //         'name',
+  //         isGreaterThanOrEqualTo: query,
+  //         isLessThan: query + 'z',
+  //       )
+  //       .snapshots()
+  //       .map(
+  //     (event) {
+  //       final List<Community> communities = [];
+  //       for (var community in event.docs) {
+  //         communities.add(
+  //           Community.fromMap(community.data() as Map<String, dynamic>),
+  //         );
+  //       }
+  //       return communities;
+  //     },
+  //   );
+  // }
 
   //function to join a community, we used FieldValue.arrayUnion to make sure that we update the value field, not rewrite it
   FutureVoid joinCommunity(String communityName, String userId) async {

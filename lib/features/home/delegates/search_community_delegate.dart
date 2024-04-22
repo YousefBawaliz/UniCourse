@@ -5,6 +5,7 @@ import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
 import 'package:uni_course/features/community/controller/community_controller.dart';
+import 'package:uni_course/models/community_model.dart';
 
 //SearchDelegate is pre-built Class that helps us set up search function, it includes a search button, and suggestions
 class SearchCommunityDelegate extends SearchDelegate {
@@ -31,7 +32,33 @@ class SearchCommunityDelegate extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return const SizedBox();
+    return FutureBuilder<List<Community>>(
+      future: ref.read(searchCommunityProvider(query).future),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Loader();
+        } else if (snapshot.hasError) {
+          return ErrorText(error: snapshot.error.toString());
+        } else {
+          final results = snapshot.data ?? [];
+          return ListView.builder(
+            itemCount: results.length,
+            itemBuilder: (context, index) {
+              final community = results[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage: NetworkImage(community.avatar),
+                ),
+                title: Text("c/${community.name}"),
+                onTap: () {
+                  navigateToCommunity(context, community.name);
+                },
+              );
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
