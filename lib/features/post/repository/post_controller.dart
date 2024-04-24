@@ -171,4 +171,30 @@ class PostController extends StateNotifier<bool> {
     //return an empty stream if no posts are present yet
     return Stream.value([]);
   }
+
+  void deletePost(Post post, BuildContext context) async {
+    state = true;
+    final res = await _postRepository.deletePost(post);
+    state = false;
+    res.fold(
+      (l) => null,
+      (r) => showSnackBar(context, "post deleted successfully!"),
+    );
+  }
+
+  /// Upvotes a post.
+  ///
+  /// This method takes a [post] object and upvotes it by the current user.
+  /// It retrieves the current user from the [_ref] using the [userProvider].
+  /// The upvote operation is performed by calling [_postRepository.upvote]
+  /// with the [post] and the user's unique identifier ([user.uid]).
+  void upvote(Post post) async {
+    final user = _ref.read(userProvider)!;
+    _postRepository.upvote(post, user.uid);
+  }
+
+  void downvote(Post post) async {
+    final user = _ref.read(userProvider)!;
+    _postRepository.downvote(post, user.uid);
+  }
 }

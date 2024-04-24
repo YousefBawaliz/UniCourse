@@ -67,4 +67,61 @@ class PostRepository {
               .toList(),
         );
   }
+
+  //function to delete a post from fireBase
+  FutureVoid deletePost(Post post) async {
+    try {
+      return right(_posts.doc(post.id).delete());
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  /// Upvotes a post and updates the Firestore document accordingly.
+  /// If the user has previously downvoted the post, the user's ID will be removed from the 'downvotes' array
+  /// and added to the 'upvotes' array. If the user has previously upvoted the post, the user's ID will be removed
+  /// from the 'upvotes' array.
+
+  void upvote(Post post, String userID) async {
+    if (post.downvotes.contains(userID)) {
+      _posts.doc(post.id).update({
+        'downvotes': FieldValue.arrayRemove([userID]),
+        'upvotes': FieldValue.arrayUnion([userID])
+      });
+    }
+    if (post.upvotes.contains(userID)) {
+      _posts.doc(post.id).update({
+        'upvotes': FieldValue.arrayRemove([userID])
+      });
+    } else {
+      _posts.doc(post.id).update({
+        'upvotes': FieldValue.arrayUnion([userID])
+      });
+    }
+  }
+
+  /// Downvotes a post by removing the user's upvote and adding the user's downvote.
+  ///
+  /// If the user has already upvoted the post, their upvote is removed and their downvote is added.
+  /// If the user has already downvoted the post, their downvote is removed.
+  ///
+  void downvote(Post post, String userID) async {
+    if (post.upvotes.contains(userID)) {
+      _posts.doc(post.id).update({
+        'upvotes': FieldValue.arrayRemove([userID]),
+        'downvotes': FieldValue.arrayUnion([userID])
+      });
+    }
+    if (post.downvotes.contains(userID)) {
+      _posts.doc(post.id).update({
+        'downvotes': FieldValue.arrayRemove([userID])
+      });
+    } else {
+      _posts.doc(post.id).update({
+        'downvotes': FieldValue.arrayUnion([userID])
+      });
+    }
+  }
 }

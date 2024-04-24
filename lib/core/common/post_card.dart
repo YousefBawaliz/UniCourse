@@ -1,15 +1,28 @@
 import 'package:any_link_preview/any_link_preview.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_course/core/constants/constants.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
+import 'package:uni_course/features/post/repository/post_controller.dart';
 import 'package:uni_course/models/post_model.dart';
 import 'package:uni_course/theme/pallete.dart';
 
 class PostCard extends ConsumerWidget {
   final Post post;
   const PostCard({super.key, required this.post});
+
+  //buildContext is needed to diaply snackbar
+  void deletePost(WidgetRef ref, BuildContext context) async {
+    ref.read(postControllerProvider.notifier).deletePost(post, context);
+  }
+
+  void upvotePost(WidgetRef ref) async {
+    ref.watch(postControllerProvider.notifier).upvote(post);
+  }
+
+  void downvotePost(WidgetRef ref) async {
+    ref.watch(postControllerProvider.notifier).downvote(post);
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +48,7 @@ class PostCard extends ConsumerWidget {
                       padding: const EdgeInsets.symmetric(
                         vertical: 4,
                         horizontal: 16,
-                      ).copyWith(right: 0),
+                      ).copyWith(right: 8),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -73,7 +86,9 @@ class PostCard extends ConsumerWidget {
                               ),
                               if (post.uid == user.uid)
                                 IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    deletePost(ref, context);
+                                  },
                                   icon: Icon(
                                     Icons.delete,
                                     color: Pallete.redColor,
@@ -99,8 +114,7 @@ class PostCard extends ConsumerWidget {
                             ),
                           if (isTypeLink)
                             SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.35,
+                                height: 150,
                                 width: double.infinity,
                                 child: AnyLinkPreview(
                                   link: post.link!,
@@ -124,7 +138,9 @@ class PostCard extends ConsumerWidget {
                               Row(
                                 children: [
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      upvotePost(ref);
+                                    },
                                     icon: Icon(
                                       Constants.up,
                                       size: 30,
@@ -139,7 +155,9 @@ class PostCard extends ConsumerWidget {
                                     style: const TextStyle(fontSize: 17),
                                   ),
                                   IconButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      downvotePost(ref);
+                                    },
                                     icon: Icon(
                                       Constants.down,
                                       size: 30,
