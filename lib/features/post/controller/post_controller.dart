@@ -31,6 +31,12 @@ final userPostProvider =
   return postController.fetchUserPosts(communities);
 });
 
+//provider to get a post by it's Id, to be used when fetching comments of a post
+final getPostByIdProvider = StreamProvider.family((ref, String postId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPostById(postId);
+});
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -196,5 +202,11 @@ class PostController extends StateNotifier<bool> {
   void downvote(Post post) async {
     final user = _ref.read(userProvider)!;
     _postRepository.downvote(post, user.uid);
+  }
+
+  //get a post by it's Id
+  //to be used when fetching comments of a post
+  Stream<Post> getPostById(String postId) {
+    return _postRepository.getPostById(postId);
   }
 }

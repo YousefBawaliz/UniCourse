@@ -5,6 +5,7 @@ import 'package:uni_course/core/constants/firebase_constants.dart';
 import 'package:uni_course/core/failure.dart';
 import 'package:uni_course/core/providers/firebase_providers.dart';
 import 'package:uni_course/core/type_defs.dart';
+import 'package:uni_course/models/comment_model.dart';
 import 'package:uni_course/models/community_model.dart';
 import 'package:uni_course/models/post_model.dart';
 
@@ -22,6 +23,10 @@ class PostRepository {
   //getter to get the posts collection from Firebase
   CollectionReference get _posts =>
       _fireStore.collection(FirebaseConstants.postsCollection);
+
+  //getter to get the comments collection from Firebase
+  CollectionReference get _comments =>
+      _fireStore.collection(FirebaseConstants.commentsCollection);
 
   //function to add a post to fireBase
   FutureVoid addPost(Post post) async {
@@ -122,6 +127,23 @@ class PostRepository {
       _posts.doc(post.id).update({
         'downvotes': FieldValue.arrayUnion([userID])
       });
+    }
+  }
+
+  Stream<Post> getPostById(String postId) {
+    return _posts
+        .doc(postId)
+        .snapshots()
+        .map((event) => Post.fromMap(event.data() as Map<String, dynamic>));
+  }
+
+  FutureVoid addComment(Comment comment) async {
+    try {
+      return right(_comments.doc(comment.id).set(comment.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
     }
   }
 }

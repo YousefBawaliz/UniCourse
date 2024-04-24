@@ -12,6 +12,7 @@ import 'package:uni_course/core/utils.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/features/community/repository/community_repository.dart';
 import 'package:uni_course/models/community_model.dart';
+import 'package:uni_course/models/post_model.dart';
 
 //provider to get access to the communties the user is part of
 final userCommunitiesProvider = StreamProvider((ref) {
@@ -28,6 +29,13 @@ final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
 //provider for search function:
 final searchCommunityProvider = StreamProvider.family((ref, String query) {
   return ref.watch(communityControllerProvider.notifier).searchCommunity(query);
+});
+
+//provider to get access to the posts of a community
+final getCommunityPostsProvider = StreamProvider.family((ref, String name) {
+  return ref
+      .watch(communityControllerProvider.notifier)
+      .getCommunityPosts(name);
 });
 
 //provider which gives access to this class
@@ -163,5 +171,9 @@ class CommunityController extends StateNotifier<bool> {
     final res = await _communityRepository.addMods(communityName, uids);
     res.fold((l) => showSnackBar(context, l.message),
         (r) => Routemaster.of(context).pop());
+  }
+
+  Stream<List<Post>> getCommunityPosts(String communityName) {
+    return _communityRepository.getCommunityPosts(communityName);
   }
 }

@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
+import 'package:uni_course/core/common/post_card.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
+import 'package:uni_course/features/user_profile/controller/user_profile_controller.dart';
 
 class UserProfileScreen extends ConsumerWidget {
   final String uid;
@@ -90,7 +92,21 @@ class UserProfileScreen extends ConsumerWidget {
                     ),
                   ];
                 },
-                body: Text("displaying")),
+                body: ref.watch(getUserPostsProvider(uid)).when(
+                      data: (data) {
+                        return ListView.builder(
+                          itemCount: data.length,
+                          itemBuilder: (context, index) {
+                            final post = data[index];
+                            return PostCard(post: post);
+                          },
+                        );
+                      },
+                      error: (error, stackTrace) {
+                        return ErrorText(error: error.toString());
+                      },
+                      loading: () => const Loader(),
+                    )),
             error: (error, stackTrace) => ErrorText(error: error.toString()),
             loading: () => const Loader(),
           ),

@@ -9,7 +9,7 @@ import 'package:uni_course/core/common/loader.dart';
 import 'package:uni_course/core/utils.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/features/community/controller/community_controller.dart';
-import 'package:uni_course/features/post/repository/post_controller.dart';
+import 'package:uni_course/features/post/controller/post_controller.dart';
 import 'package:uni_course/models/community_model.dart';
 import 'package:uni_course/theme/pallete.dart';
 

@@ -7,6 +7,7 @@ import 'package:uni_course/core/failure.dart';
 import 'package:uni_course/core/providers/firebase_providers.dart';
 import 'package:uni_course/core/type_defs.dart';
 import 'package:uni_course/models/community_model.dart';
+import 'package:uni_course/models/post_model.dart';
 
 //provider of the CommunityRepository
 final communityRepositoryProvider = Provider((ref) {
@@ -21,6 +22,10 @@ class CommunityRepository {
   //getter for communites collection
   CollectionReference get _communities =>
       _fireStore.collection(FirebaseConstants.communitiesCollection);
+
+  //getter to get posts collection
+  CollectionReference get _posts =>
+      _fireStore.collection(FirebaseConstants.postsCollection);
 
   //is of type FutureVoid because there could be some errors when creating a community
   FutureVoid createCommunity(Community community) async {
@@ -171,5 +176,21 @@ class CommunityRepository {
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<Post>> getCommunityPosts(String communityName) {
+    return _posts
+        .where('communityName', isEqualTo: communityName)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+      (snapshot) {
+        return snapshot.docs
+            .map(
+              (doc) => Post.fromMap(doc.data() as Map<String, dynamic>),
+            )
+            .toList();
+      },
+    );
   }
 }
