@@ -137,13 +137,29 @@ class PostRepository {
         .map((event) => Post.fromMap(event.data() as Map<String, dynamic>));
   }
 
+  /// Adds a comment to the Firestore database.
+  ///
+  /// The [comment] parameter represents the comment to be added.
+  /// Returns a [FutureVoid] indicating the success or failure of the operation.
+  /// Throws a [FirebaseException] if there is an error with the Firestore operation.
+  /// Throws a [Failure] if there is an error that is not related to Firestore.
   FutureVoid addComment(Comment comment) async {
     try {
-      return right(_comments.doc(comment.id).set(comment.toMap()));
+      await _comments.doc(comment.id).set(comment.toMap());
+      return right(_posts
+          .doc(_posts.id)
+          .update({'commentCount': FieldValue.increment(1)}));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {
       return left(Failure(e.toString()));
     }
+  }
+
+  Stream<List<Comment>> fetchComments(String postId) {
+    return _comments.where('postId', isEqualTo: postId).snapshots().map(
+        (event) => event.docs
+            .map((e) => Comment.fromMap(e.data() as Map<String, dynamic>))
+            .toList());
   }
 }
