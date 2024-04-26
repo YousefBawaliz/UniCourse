@@ -1,4 +1,5 @@
 import 'package:any_link_preview/any_link_preview.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,6 +33,12 @@ class _PostCardState extends ConsumerState<PostCard> {
     ref.read(postControllerProvider.notifier).downvote(widget.post);
   }
 
+  void savePost() async {
+    ref
+        .read(postControllerProvider.notifier)
+        .savePost(postId: widget.post.id, context: context);
+  }
+
   //navigate to the user profile page of the user who posted the post
   void navigateToUserProfile(BuildContext context) {
     Routemaster.of(context).push('/u/${widget.post.uid}');
@@ -55,6 +62,12 @@ class _PostCardState extends ConsumerState<PostCard> {
     final currentTheme = ref.watch(themeNotifierProvider);
     final user = ref.watch(userProvider)!;
 
+    final savedposts = ref.watch(getSavedPostsProvider(user.uid)).maybeWhen(
+          data: (posts) => posts,
+          orElse: () => [],
+        );
+    final isPostSaved = savedposts.contains(widget.post.id);
+
     return Column(
       children: [
         Container(
@@ -77,47 +90,72 @@ class _PostCardState extends ConsumerState<PostCard> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  //user profile picture
-                                  GestureDetector(
-                                    onTap: () {
-                                      navigateToUserProfile(context);
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundImage: NetworkImage(
-                                          widget.post.communityProfilePic),
-                                      radius: 16,
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    //user profile picture
+                                    GestureDetector(
+                                      onTap: () {
+                                        // navigateToUserProfile(context);
+                                        navigatetoCommunity(context);
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            widget.post.communityProfilePic),
+                                        radius: 16,
+                                      ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            navigatetoCommunity(context);
-                                          },
-                                          child: Text(
-                                            'c/${widget.post.communityName}',
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold),
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 8),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              navigatetoCommunity(context);
+                                            },
+                                            child: Text(
+                                              'c/${widget.post.communityName}',
+                                              style: const TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
                                           ),
-                                        ),
-                                        Text(
-                                          'u/${widget.post.username}',
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
-                                      ],
+                                          Text(
+                                            'u/${widget.post.username}',
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                    const Spacer(),
+
+                                    ///
+                                    ///save button:
+                                    ///
+                                    IconButton(
+                                      onPressed: () {
+                                        savePost();
+                                        print(savedposts);
+                                      },
+                                      icon: Icon(
+                                        isPostSaved
+                                            ? Icons.bookmark
+                                            : Icons.bookmark_border,
+                                        size: 30,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
+
+                          ///
+                          ///Title of the post
+                          ///
                           Padding(
                             padding: const EdgeInsets.only(top: 10.0),
                             child: Text(widget.post.title,
@@ -159,36 +197,60 @@ class _PostCardState extends ConsumerState<PostCard> {
                             children: [
                               Row(
                                 children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      upvotePost();
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 400),
+                                    transitionBuilder: (Widget child,
+                                        Animation<double> animation) {
+                                      return ScaleTransition(
+                                        scale: animation,
+                                        child: child,
+                                      );
                                     },
-                                    icon: Icon(
-                                      Constants.up,
-                                      size: 30,
-                                      //if user upvoted, turn upvote button red
-                                      color:
-                                          widget.post.upvotes.contains(user.uid)
-                                              ? Pallete.redColor
-                                              : null,
+                                    child: IconButton(
+                                      key: ValueKey<bool>(widget.post.upvotes
+                                          .contains(user.uid)),
+                                      onPressed: () {
+                                        upvotePost();
+                                      },
+                                      icon: Icon(
+                                        Constants.up,
+                                        size: 30,
+                                        //if user upvoted, turn upvote button red
+                                        color: widget.post.upvotes
+                                                .contains(user.uid)
+                                            ? Pallete.redColor
+                                            : null,
+                                      ),
                                     ),
                                   ),
                                   Text(
                                     '${widget.post.upvotes.length - widget.post.downvotes.length}',
                                     style: const TextStyle(fontSize: 17),
                                   ),
-                                  IconButton(
-                                    onPressed: () {
-                                      downvotePost();
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 400),
+                                    transitionBuilder: (Widget child,
+                                        Animation<double> animation) {
+                                      return ScaleTransition(
+                                        scale: animation,
+                                        child: child,
+                                      );
                                     },
-                                    icon: Icon(
-                                      Constants.down,
-                                      size: 30,
-                                      //if user upvoted, turn upvote button red
-                                      color: widget.post.downvotes
-                                              .contains(user.uid)
-                                          ? Pallete.blueColor
-                                          : null,
+                                    child: IconButton(
+                                      key: ValueKey<bool>(widget.post.downvotes
+                                          .contains(user.uid)),
+                                      onPressed: () {
+                                        downvotePost();
+                                      },
+                                      icon: Icon(
+                                        Constants.down,
+                                        size: 30,
+                                        //if user upvoted, turn upvote button red
+                                        color: widget.post.downvotes
+                                                .contains(user.uid)
+                                            ? Pallete.blueColor
+                                            : null,
+                                      ),
                                     ),
                                   )
                                 ],
@@ -208,7 +270,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 ],
                               ),
                               const Spacer(),
-                              //if user is a mod of the community, show the edit button
+                              //if user is a mod of the community, show the delete button
                               ref
                                   .watch(getCommunityByNameProvider(
                                       widget.post.communityName))

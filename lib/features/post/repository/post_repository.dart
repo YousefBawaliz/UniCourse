@@ -28,6 +28,10 @@ class PostRepository {
   CollectionReference get _comments =>
       _fireStore.collection(FirebaseConstants.commentsCollection);
 
+  //getter to get the savedPosts collection from Firebase
+  final CollectionReference _savedPosts =
+      FirebaseFirestore.instance.collection('savedPosts');
+
   //function to add a post to fireBase
   FutureVoid addPost(Post post) async {
     try {
@@ -156,10 +160,71 @@ class PostRepository {
     }
   }
 
+  /// Fetches the comments for a given post ID.
+  ///
+  /// Returns a stream of lists of [Comment] objects.
+  /// The stream emits a new list of comments whenever there is a change in the comments collection
+  /// where the 'postId' field is equal to the provided [postId].
+  /// Each comment is converted from a Firestore document snapshot to a [Comment] object using the [Comment.fromMap] method.
   Stream<List<Comment>> fetchComments(String postId) {
     return _comments.where('postId', isEqualTo: postId).snapshots().map(
         (event) => event.docs
             .map((e) => Comment.fromMap(e.data() as Map<String, dynamic>))
             .toList());
+  }
+
+  /// Saves a post for a specific user.
+  ///
+  /// The [post] parameter represents the post to be saved.
+  /// The [userID] parameter represents the ID of the user who is saving the post.
+  ///
+  /// Returns a [FutureVoid] that completes when the post is successfully saved.
+  /// Throws a [FirebaseException] if there is an error while saving the post.
+  /// Returns a [Failure] if there is an error that is not a [FirebaseException].
+  // FutureVoid savePost(String userId, String postId) async {
+  //   try {
+  //     return right(_savedPosts.doc(userId).set({
+  //       'userId': userId,
+  //       'postId': postId,
+  //     }));
+  //   } on FirebaseException catch (e) {
+  //     throw e.message!;
+  //   } catch (e) {
+  //     return left(Failure(e.toString()));
+  //   }
+  // }
+
+  FutureVoid savePost(String userId, String postId) async {
+    try {
+      final querySnapshot = await _savedPosts
+          .where('userId', isEqualTo: userId)
+          .where('postId', isEqualTo: postId)
+          .get();
+
+      if (querySnapshot.docs.isEmpty) {
+        // The post is not saved yet, so save it.
+        return right(_savedPosts.doc(userId).set({
+          'userId': userId,
+          'postId': postId,
+        }));
+      } else {
+        // The post is already saved, so unsave it.
+        return right(querySnapshot.docs.first.reference.delete());
+      }
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  /// Fetches the saved posts for a given user.
+  ///
+  /// The [userId] parameter specifies the ID of the user whose saved posts are to be fetched.
+  /// Returns a [Stream] of [List<String>] representing the IDs of the saved posts.
+  Stream<List<String>> fetchSavedPosts(String userId) {
+    return _savedPosts.where('userId', isEqualTo: userId).snapshots().map(
+        (snapshot) =>
+            snapshot.docs.map((doc) => doc['postId'] as String).toList());
   }
 }

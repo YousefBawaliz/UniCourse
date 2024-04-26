@@ -38,10 +38,8 @@ class CommunityListDrawer extends ConsumerWidget {
                       itemBuilder: (context, index) {
                         final community = data[index];
                         return ListTile(
-                          leading: const CircleAvatar(
-                            backgroundImage:
-                                AssetImage('assets/images/avatarDefault2.png'),
-                            // backgroundImage: NetworkImage(community.avatar),
+                          leading: CircleAvatar(
+                            backgroundImage: NetworkImage(community.avatar),
                           ),
                           title: Text('c/${community.name}'),
                           onTap: () {

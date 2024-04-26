@@ -46,6 +46,12 @@ final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
   return postController.fetchComments(postId);
 });
 
+//provider to get saved posts
+final getSavedPostsProvider = StreamProvider.family((ref, String userId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchSavedPosts(userId);
+});
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -252,5 +258,19 @@ class PostController extends StateNotifier<bool> {
   /// Returns a stream of lists of [Comment] objects.
   Stream<List<Comment>> fetchComments(String postId) {
     return _postRepository.fetchComments(postId);
+  }
+
+  void savePost({
+    required BuildContext context,
+    required String postId,
+  }) async {
+    final userId = _ref.read(userProvider)!.uid;
+    final res = await _postRepository.savePost(userId, postId);
+    res.fold((l) => showSnackBar(context, l.message),
+        (r) => showSnackBar(context, 'Post saved successfully!'));
+  }
+
+  Stream<List<String>> fetchSavedPosts(String userId) {
+    return _postRepository.fetchSavedPosts(userId);
   }
 }
