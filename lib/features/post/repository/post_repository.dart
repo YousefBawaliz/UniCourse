@@ -194,7 +194,7 @@ class PostRepository {
   //   }
   // }
 
-  FutureVoid savePost(String userId, String postId) async {
+  Future<Either<Failure, String>> savePost(String userId, String postId) async {
     try {
       final querySnapshot = await _savedPosts
           .where('userId', isEqualTo: userId)
@@ -203,13 +203,15 @@ class PostRepository {
 
       if (querySnapshot.docs.isEmpty) {
         // The post is not saved yet, so save it.
-        return right(_savedPosts.doc(userId).set({
+        await _savedPosts.doc(userId).set({
           'userId': userId,
           'postId': postId,
-        }));
+        });
+        return right("Post saved successfully!");
       } else {
         // The post is already saved, so unsave it.
-        return right(querySnapshot.docs.first.reference.delete());
+        await querySnapshot.docs.first.reference.delete();
+        return right("Post unsaved");
       }
     } on FirebaseException catch (e) {
       throw e.message!;

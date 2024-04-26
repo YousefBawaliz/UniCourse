@@ -267,7 +267,7 @@ class PostController extends StateNotifier<bool> {
     final userId = _ref.read(userProvider)!.uid;
     final res = await _postRepository.savePost(userId, postId);
     res.fold((l) => showSnackBar(context, l.message),
-        (r) => showSnackBar(context, 'Post saved successfully!'));
+        (r) => showSnackBar(context, r));
   }
 
   Stream<List<String>> fetchSavedPosts(String userId) {
