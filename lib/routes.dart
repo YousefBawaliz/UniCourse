@@ -7,6 +7,7 @@ import 'package:uni_course/features/community/screens/community_screen.dart';
 import 'package:uni_course/features/community/screens/create_community_screen.dart';
 import 'package:uni_course/features/community/screens/edit_community_screen.dart';
 import 'package:uni_course/features/community/screens/mod_tools_screen.dart';
+import 'package:uni_course/features/feed/saved_posts_feed_screen.dart';
 import 'package:uni_course/features/home/screens/home_screen.dart';
 import 'package:uni_course/features/auth/sceen/login_screen.dart';
 import 'package:uni_course/features/post/screens/add_post_type_screen.dart';
@@ -38,4 +39,5 @@ final loggedInRoute = RouteMap(routes: {
       child: AddPostTypeScreen(type: route.pathParameters['type']!)),
   '/post/:postID/comments': (route) => MaterialPage(
       child: CommentScreen(postID: route.pathParameters['postID']!)),
+  '/u/savedPosts': (route) => const MaterialPage(child: SavedPostsFeedScreen()),
 });

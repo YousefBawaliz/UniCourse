@@ -51,17 +51,19 @@ class _MyAppState extends ConsumerState<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'UniCourse',
             theme: ref.watch(themeNotifierProvider),
-            routerDelegate: RoutemasterDelegate(routesBuilder: (context) {
-              //render initial screen based on the existence of user data (logged in or not)
-              if (data != null) {
-                if (userModel != null) {
-                  return loggedInRoute;
-                } else {
-                  getData(ref, data);
+            routerDelegate: RoutemasterDelegate(
+              routesBuilder: (context) {
+                //render initial screen based on the existence of user data (logged in or not)
+                if (data != null) {
+                  if (userModel != null) {
+                    return loggedInRoute;
+                  } else {
+                    getData(ref, data);
+                  }
                 }
-              }
-              return loggedOutRoute;
-            }),
+                return loggedOutRoute;
+              },
+            ),
             routeInformationParser: const RoutemasterParser(),
           ),
           error: (error, stackTrace) => ErrorText(error: error.toString()),

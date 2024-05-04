@@ -35,13 +35,6 @@ class PostRepository {
   //function to add a post to fireBase
   FutureVoid addPost(Post post) async {
     try {
-      var communityDoc = await _posts.doc(post.id).get();
-      //to ensure no 2 communities with the same name exist.
-      if (communityDoc.exists) {
-        throw 'community with the same name already exists';
-      }
-      //if no community with such name exists, set it
-      //set return futureVoid, so does 'right'
       return right(
         //toMap because FireStore stores data as a map
         _posts.doc(post.id).set(
@@ -141,6 +134,13 @@ class PostRepository {
         .map((event) => Post.fromMap(event.data() as Map<String, dynamic>));
   }
 
+  Stream<List<Post>> getPostsById(List<String> postId) {
+    return _posts.where(FieldPath.documentId, whereIn: postId).snapshots().map(
+        (event) => event.docs
+            .map((e) => Post.fromMap(e.data() as Map<String, dynamic>))
+            .toList());
+  }
+
   /// Adds a comment to the Firestore database.
   ///
   /// The [comment] parameter represents the comment to be added.
@@ -194,6 +194,8 @@ class PostRepository {
   //   }
   // }
 
+  ///todo: this is utterly stupid as it creates a new document for each saved post,
+  ///edit it later to save the post ids in an array in the user document.
   Future<Either<Failure, String>> savePost(String userId, String postId) async {
     try {
       final querySnapshot = await _savedPosts
@@ -203,7 +205,7 @@ class PostRepository {
 
       if (querySnapshot.docs.isEmpty) {
         // The post is not saved yet, so save it.
-        await _savedPosts.doc(userId).set({
+        await _savedPosts.add({
           'userId': userId,
           'postId': postId,
         });

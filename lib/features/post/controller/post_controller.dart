@@ -52,6 +52,13 @@ final getSavedPostsProvider = StreamProvider.family((ref, String userId) {
   return postController.fetchSavedPosts(userId);
 });
 
+///provider to get saved posts as Post
+///why you ask? becuase i'm very lazy to refactor the code
+final getPostsByIdProvider = StreamProvider.family((ref, List<String> postIds) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getPostsById(postIds);
+});
+
 class PostController extends StateNotifier<bool> {
   final PostRepository _postRepository;
   final Ref _ref;
@@ -272,5 +279,9 @@ class PostController extends StateNotifier<bool> {
 
   Stream<List<String>> fetchSavedPosts(String userId) {
     return _postRepository.fetchSavedPosts(userId);
+  }
+
+  Stream<List<Post>> getPostsById(List<String> postId) {
+    return _postRepository.getPostsById(postId);
   }
 }

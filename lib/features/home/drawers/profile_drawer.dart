@@ -20,6 +20,10 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
     Routemaster.of(context).push('/u/$uid');
   }
 
+  void navigateToSavedPosts(BuildContext context) {
+    Routemaster.of(context).push('/u/savedPosts');
+  }
+
   void toggleTheme(WidgetRef ref) {
     ref.read(themeNotifierProvider.notifier).toggleTheme();
   }
@@ -60,6 +64,18 @@ class _ProfileDrawerState extends ConsumerState<ProfileDrawer> {
               // navigateToUserProfile(context, user.uid)
               ,
             ),
+            // const SizedBox(height: 10),
+            ListTile(
+              title: const Text('Saved posts'),
+              leading: const Icon(Icons.person),
+              onTap: () {
+                navigateToSavedPosts(context);
+              }
+              // navigateToUserProfile(context, user.uid)
+              ,
+            ),
+            const Divider(),
+
             ListTile(
               title: const Text('Log Out'),
               leading: Icon(
