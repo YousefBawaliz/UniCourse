@@ -150,9 +150,9 @@ class PostRepository {
   FutureVoid addComment(Comment comment) async {
     try {
       await _comments.doc(comment.id).set(comment.toMap());
-      return right(_posts
-          .doc(_posts.id)
-          .update({'commentCount': FieldValue.increment(1)}));
+      return right(_posts.doc(comment.postId).update({
+        'commentCount': FieldValue.increment(1),
+      }));
     } on FirebaseException catch (e) {
       throw e.message!;
     } catch (e) {

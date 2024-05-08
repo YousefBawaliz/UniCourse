@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/common/error_text.dart';
@@ -45,6 +46,12 @@ class _MyAppState extends ConsumerState<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final currentTheme = ref.watch(themeNotifierProvider);
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor:
+          currentTheme.colorScheme.background, // Set the color you want here
+    ));
     //Performs an action based on the state of the [AsyncValue]. All cases are required, which allows returning a non-nullable value.
     return ref.watch(authStateChangeProvider).when(
           data: (data) => MaterialApp.router(

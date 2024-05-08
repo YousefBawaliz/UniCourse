@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:uni_course/core/enums/enums.dart';
 import 'package:uni_course/core/providers/storage_repository_provider.dart';
 import 'package:uni_course/core/utils.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
@@ -97,7 +98,27 @@ class UserProfileController extends StateNotifier<bool> {
     );
   }
 
+  /// Retrieves a stream of posts belonging to a specific user.
+  ///
+  /// The [uid] parameter is the unique identifier of the user.
+  /// Returns a [Stream] that emits a list of [Post] objects.
   Stream<List<Post>> getUserPosts(String uid) {
     return _userProfileRepository.getUserPosts(uid);
+  }
+
+  /// Updates the karma of the current user.
+  ///
+  /// The [karma] parameter is the new [UserKarma] object representing the updated karma.
+  /// Retrieves the current user from the [userProvider] and updates the karma value.
+  /// Returns the result of the karma update operation as a [Future].
+  /// If the update is successful, the user state is updated using the [userProvider.notifier].
+  void updateUserKarma(UserKarma karma) async {
+    UserModel user = _ref.read(userProvider)!;
+    user = user.copyWith(karma: user.karma + karma.karma);
+    final res = await _userProfileRepository.updateUserKarma(user);
+    res.fold(
+      (l) => null,
+      (r) => _ref.read(userProvider.notifier).update((state) => user),
+    );
   }
 }

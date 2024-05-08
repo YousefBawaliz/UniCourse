@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
 import 'package:uni_course/core/constants/firebase_constants.dart';
+import 'package:uni_course/core/enums/enums.dart';
 import 'package:uni_course/core/failure.dart';
 import 'package:uni_course/core/providers/firebase_providers.dart';
 import 'package:uni_course/core/type_defs.dart';
@@ -49,5 +50,25 @@ class UserRepository {
             .toList();
       },
     );
+  }
+
+  /// Updates the karma of a user in the Firestore database.
+  ///
+  /// Takes a [UserModel] object as input and updates the 'karma' field in the
+  /// Firestore document corresponding to the user's UID.
+  ///
+  /// Returns a [FutureVoid] that completes when the update operation is finished.
+  /// If the update is successful, the [FutureVoid] resolves to `null`. If an
+  /// error occurs during the update, the [FutureVoid] throws a [FirebaseException]
+  /// with the error message. If an unexpected error occurs, the [FutureVoid] returns
+  /// a [Failure] object containing the error message.
+  FutureVoid updateUserKarma(UserModel user) async {
+    try {
+      return right(_users.doc(user.uid).update({'karma': user.karma}));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
   }
 }
