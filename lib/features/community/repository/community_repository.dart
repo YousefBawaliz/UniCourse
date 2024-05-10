@@ -178,10 +178,39 @@ class CommunityRepository {
     }
   }
 
+  /// Retrieves a stream of community posts based on the provided [communityName].
+  ///
+  /// The stream emits a list of [Post] objects, ordered by their creation date in descending order.
+  /// The stream is updated in real-time whenever there are changes to the underlying data source.
+  ///
+
   Stream<List<Post>> getCommunityPosts(String communityName) {
     return _posts
         .where('communityName', isEqualTo: communityName)
         .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map(
+      (snapshot) {
+        return snapshot.docs
+            .map(
+              (doc) => Post.fromMap(doc.data() as Map<String, dynamic>),
+            )
+            .toList();
+      },
+    );
+  }
+
+  /// Retrieves a stream of top community posts based on the provided [communityName].
+  ///
+  /// The method filters the posts collection by the given [communityName], orders the results
+  /// by the number of upvotes in descending order, and returns a stream of the resulting posts.
+  ///
+  /// The returned stream emits a new list of [Post] objects whenever there are changes in the
+  /// underlying Firestore collection.
+  Stream<List<Post>> getTopCommunityPosts(String communityName) {
+    return _posts
+        .where('communityName', isEqualTo: communityName)
+        .orderBy('upvotesCount', descending: true)
         .snapshots()
         .map(
       (snapshot) {

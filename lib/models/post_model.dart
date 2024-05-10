@@ -9,6 +9,7 @@ class Post {
   final String communityProfilePic;
   final List<String> upvotes;
   final List<String> downvotes;
+  final int upvotesCount;
   final int commentCount;
   final String username;
   final String uid;
@@ -24,6 +25,7 @@ class Post {
     required this.communityProfilePic,
     required this.upvotes,
     required this.downvotes,
+    required this.upvotesCount,
     required this.commentCount,
     required this.username,
     required this.uid,
@@ -41,6 +43,7 @@ class Post {
     String? communityProfilePic,
     List<String>? upvotes,
     List<String>? downvotes,
+    int? upvotesCount,
     int? commentCount,
     String? username,
     String? uid,
@@ -57,6 +60,7 @@ class Post {
       communityProfilePic: communityProfilePic ?? this.communityProfilePic,
       upvotes: upvotes ?? this.upvotes,
       downvotes: downvotes ?? this.downvotes,
+      upvotesCount: upvotesCount ?? this.upvotesCount,
       commentCount: commentCount ?? this.commentCount,
       username: username ?? this.username,
       uid: uid ?? this.uid,
@@ -76,6 +80,7 @@ class Post {
       'communityProfilePic': communityProfilePic,
       'upvotes': upvotes,
       'downvotes': downvotes,
+      'upvotesCount': upvotesCount,
       'commentCount': commentCount,
       'username': username,
       'uid': uid,
@@ -95,6 +100,7 @@ class Post {
       communityProfilePic: map['communityProfilePic'] ?? '',
       upvotes: List<String>.from(map['upvotes']),
       downvotes: List<String>.from(map['downvotes']),
+      upvotesCount: map['upvotesCount']?.toInt() ?? 0,
       commentCount: map['commentCount']?.toInt() ?? 0,
       username: map['username'] ?? '',
       uid: map['uid'] ?? '',

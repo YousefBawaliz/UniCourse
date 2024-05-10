@@ -90,16 +90,19 @@ class PostRepository {
     if (post.downvotes.contains(userID)) {
       _posts.doc(post.id).update({
         'downvotes': FieldValue.arrayRemove([userID]),
-        'upvotes': FieldValue.arrayUnion([userID])
+        'upvotes': FieldValue.arrayUnion([userID]),
+        'upvotesCount': FieldValue.increment(1),
       });
     }
     if (post.upvotes.contains(userID)) {
       _posts.doc(post.id).update({
-        'upvotes': FieldValue.arrayRemove([userID])
+        'upvotes': FieldValue.arrayRemove([userID]),
+        'upvotesCount': FieldValue.increment(-1),
       });
     } else {
       _posts.doc(post.id).update({
-        'upvotes': FieldValue.arrayUnion([userID])
+        'upvotes': FieldValue.arrayUnion([userID]),
+        'upvotesCount': FieldValue.increment(1),
       });
     }
   }
@@ -113,20 +116,26 @@ class PostRepository {
     if (post.upvotes.contains(userID)) {
       _posts.doc(post.id).update({
         'upvotes': FieldValue.arrayRemove([userID]),
-        'downvotes': FieldValue.arrayUnion([userID])
+        'downvotes': FieldValue.arrayUnion([userID]),
+        'upvotesCount': FieldValue.increment(-1),
       });
     }
     if (post.downvotes.contains(userID)) {
       _posts.doc(post.id).update({
-        'downvotes': FieldValue.arrayRemove([userID])
+        'downvotes': FieldValue.arrayRemove([userID]),
+        'upvotesCount': FieldValue.increment(1),
       });
     } else {
       _posts.doc(post.id).update({
-        'downvotes': FieldValue.arrayUnion([userID])
+        'downvotes': FieldValue.arrayUnion([userID]),
+        'upvotesCount': FieldValue.increment(-1),
       });
     }
   }
 
+  /// Retrieves a single post by its [postId].
+  ///
+  /// Returns a [Stream] of [Post] objects representing the post with the specified [postId].
   Stream<Post> getPostById(String postId) {
     return _posts
         .doc(postId)
@@ -134,6 +143,9 @@ class PostRepository {
         .map((event) => Post.fromMap(event.data() as Map<String, dynamic>));
   }
 
+  /// Retrieves multiple posts by their [postId].
+  ///
+  /// Returns a [Stream] of [List<Post>] objects representing the posts with the specified [postId]s.
   Stream<List<Post>> getPostsById(List<String> postId) {
     return _posts.where(FieldPath.documentId, whereIn: postId).snapshots().map(
         (event) => event.docs
@@ -172,27 +184,6 @@ class PostRepository {
             .map((e) => Comment.fromMap(e.data() as Map<String, dynamic>))
             .toList());
   }
-
-  /// Saves a post for a specific user.
-  ///
-  /// The [post] parameter represents the post to be saved.
-  /// The [userID] parameter represents the ID of the user who is saving the post.
-  ///
-  /// Returns a [FutureVoid] that completes when the post is successfully saved.
-  /// Throws a [FirebaseException] if there is an error while saving the post.
-  /// Returns a [Failure] if there is an error that is not a [FirebaseException].
-  // FutureVoid savePost(String userId, String postId) async {
-  //   try {
-  //     return right(_savedPosts.doc(userId).set({
-  //       'userId': userId,
-  //       'postId': postId,
-  //     }));
-  //   } on FirebaseException catch (e) {
-  //     throw e.message!;
-  //   } catch (e) {
-  //     return left(Failure(e.toString()));
-  //   }
-  // }
 
   ///todo: this is utterly stupid as it creates a new document for each saved post,
   ///edit it later to save the post ids in an array in the user document.
