@@ -135,18 +135,27 @@ class _PostCardState extends ConsumerState<PostCard> {
                                     ///
                                     ///save button:
                                     ///
-                                    IconButton(
-                                      onPressed: () {
-                                        savePost();
-                                        print(savedposts);
+                                    AnimatedSwitcher(
+                                      duration:
+                                          const Duration(milliseconds: 250),
+                                      transitionBuilder: (Widget child,
+                                          Animation<double> animation) {
+                                        return ScaleTransition(
+                                            scale: animation, child: child);
                                       },
-                                      icon: Icon(
-                                        isPostSaved
-                                            ? Icons.bookmark
-                                            : Icons.bookmark_border,
-                                        size: 30,
+                                      child: IconButton(
+                                        key: ValueKey<bool>(isPostSaved),
+                                        onPressed: () {
+                                          savePost();
+                                        },
+                                        icon: Icon(
+                                          isPostSaved
+                                              ? Icons.bookmark
+                                              : Icons.bookmark_border,
+                                          size: 30,
+                                        ),
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
                               ),
@@ -156,11 +165,17 @@ class _PostCardState extends ConsumerState<PostCard> {
                           ///
                           ///Title of the post
                           ///
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10.0),
-                            child: Text(widget.post.title,
-                                style: const TextStyle(
-                                    fontSize: 19, fontWeight: FontWeight.bold)),
+                          GestureDetector(
+                            onTap: () {
+                              navigateToCommentScreen(context);
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: Text(widget.post.title,
+                                  style: const TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.bold)),
+                            ),
                           ),
                           if (isTypeImage)
                             //display image in proportion to 35% of the device height
@@ -307,8 +322,13 @@ class _PostCardState extends ConsumerState<PostCard> {
             ],
           ),
         ),
-        const SizedBox(
-          height: 10,
+        // const SizedBox(
+        //   height: 10,
+        // ),
+        Divider(
+          height: 1,
+          thickness: 0.3,
+          color: currentTheme.textTheme.bodyMedium!.color,
         )
       ],
     );

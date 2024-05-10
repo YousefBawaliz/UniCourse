@@ -1,5 +1,7 @@
 enum ThemeMode { light, dark }
 
+enum SortOption { mostUpvoted, mostRecent }
+
 enum UserKarma {
   comment(1),
   textPost(2),

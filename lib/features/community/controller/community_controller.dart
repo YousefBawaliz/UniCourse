@@ -38,6 +38,13 @@ final getCommunityPostsProvider = StreamProvider.family((ref, String name) {
       .getCommunityPosts(name);
 });
 
+//provider to get access to the top posts of a community
+final getTopCommunityPostsProvider = StreamProvider.family((ref, String name) {
+  return ref
+      .watch(communityControllerProvider.notifier)
+      .getTopCommunityPosts(name);
+});
+
 //provider which gives access to this class
 final communityControllerProvider =
     StateNotifierProvider<CommunityController, bool>(
@@ -173,7 +180,15 @@ class CommunityController extends StateNotifier<bool> {
         (r) => Routemaster.of(context).pop());
   }
 
+  /// Retrieves a stream of community posts based on the provided [communityName].
+  /// Returns a stream of lists of [Post] objects.
   Stream<List<Post>> getCommunityPosts(String communityName) {
     return _communityRepository.getCommunityPosts(communityName);
+  }
+
+  /// Retrieves a stream of top community posts based on the provided [communityName].
+  /// Returns a stream of lists of [Post] objects.
+  Stream<List<Post>> getTopCommunityPosts(String communityName) {
+    return _communityRepository.getTopCommunityPosts(communityName);
   }
 }
