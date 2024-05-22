@@ -76,26 +76,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       body: Constants.tabWidgets[_page],
       drawer: const CommunityListDrawer(),
       endDrawer: const ProfileDrawer(),
-      // bottomNavigationBar: NavigationBar(
-      //   height: 70,
-      //   destinations: const <Widget>[
-      //     NavigationDestination(
-      //       selectedIcon: Icon(Icons.home),
-      //       icon: Icon(Icons.home_outlined),
-      //       label: 'Home',
-      //     ),
-      //     NavigationDestination(
-      //       icon: Badge(child: Icon(Icons.notifications_sharp)),
-      //       label: 'Notifications',
-      //     ),
-      //     NavigationDestination(
-      //       icon: Badge(
-      //         child: Icon(Icons.add),
-      //       ),
-      //       label: 'add',
-      //     ),
-      //   ],
-      // ),
+
       bottomNavigationBar: CupertinoTabBar(
         height: 60,
         iconSize: 28,

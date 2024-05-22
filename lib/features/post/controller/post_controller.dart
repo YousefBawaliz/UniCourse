@@ -125,6 +125,7 @@ class PostController extends StateNotifier<bool> {
     required String title,
     required Community selectedCommunity,
     required String link,
+    required String description,
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -145,6 +146,7 @@ class PostController extends StateNotifier<bool> {
       createdAt: DateTime.now(),
       awards: [],
       link: link,
+      description: description,
     );
 
     final res = await _postRepository.addPost(post);
@@ -164,6 +166,7 @@ class PostController extends StateNotifier<bool> {
     required String title,
     required Community selectedCommunity,
     required File? file,
+    required String description,
   }) async {
     state = true;
     String postId = const Uuid().v1();
@@ -193,6 +196,58 @@ class PostController extends StateNotifier<bool> {
         awards: [],
         //r is the link of the image stored in FireBase storage
         link: r,
+        description: description,
+      );
+
+      final res = await _postRepository.addPost(post);
+      _ref
+          .read(userProfileControllerProvider.notifier)
+          .updateUserKarma(UserKarma.imagePost);
+      state = false;
+      res.fold((l) => showSnackBar(context, l.message), (r) {
+        showSnackBar(context, 'Posted successfully!');
+        Routemaster.of(context).pop();
+      });
+    });
+  }
+
+  void shareResourcePost({
+    required BuildContext context,
+    required String title,
+    required Community selectedCommunity,
+    required File? file,
+    required String description,
+  }) async {
+    state = true;
+    String postId = const Uuid().v1();
+    final user = _ref.read(userProvider)!;
+    //a FutureVoid to check if Resource was posted or not (refer to storeFile function)
+    final imageRes = await _storageRepository.storeFile(
+      //store Resource in FireBase storage to /posts/community
+      path: 'posts/${selectedCommunity.name}',
+      id: postId,
+      file: file,
+    );
+
+    //fold the result of the FutureVoid to check if the Resource was posted or not
+    imageRes.fold((l) => showSnackBar(context, l.message), (r) async {
+      final Post post = Post(
+        id: postId,
+        title: title,
+        communityName: selectedCommunity.name,
+        communityProfilePic: selectedCommunity.avatar,
+        upvotes: [],
+        downvotes: [],
+        commentCount: 0,
+        upvotesCount: 0,
+        username: user.name,
+        uid: user.uid,
+        type: 'Resource',
+        createdAt: DateTime.now(),
+        awards: [],
+        //r is the link of the file stored in FireBase storage
+        link: r,
+        description: description,
       );
 
       final res = await _postRepository.addPost(post);

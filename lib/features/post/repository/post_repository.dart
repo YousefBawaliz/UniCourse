@@ -48,6 +48,10 @@ class PostRepository {
     }
   }
 
+  // FutureVoid downloadResource(String url) async{
+
+  // }
+
   Stream<List<Post>> fetchUserPosts(List<Community> communities) {
     //we're getting posts in communities where the community name matches the communities in the argument
     //sorted by date in descending order

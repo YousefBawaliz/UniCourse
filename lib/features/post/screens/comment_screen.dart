@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_course/core/common/loader.dart';
-import 'package:uni_course/core/common/post_card.dart';
+import 'package:uni_course/features/post/widgets/expanded_post_card.dart';
+import 'package:uni_course/features/post/widgets/post_card.dart';
 import 'package:uni_course/features/post/controller/post_controller.dart';
 import 'package:uni_course/features/post/widgets/comment_card.dart';
 import 'package:uni_course/models/post_model.dart';
@@ -46,15 +47,11 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
             data: (data) {
               return Column(
                 children: [
-                  PostCard(post: data),
-                  TextField(
-                    onSubmitted: (value) => addComment(data),
-                    controller: commentController,
-                    decoration: InputDecoration(
-                        fillColor: currentTheme.drawerTheme.backgroundColor,
-                        hintText: 'Add a Comment',
-                        filled: true,
-                        border: InputBorder.none),
+                  ExpandedPostCard(post: data),
+                  Container(
+                    height: 7,
+                    width: double.infinity,
+                    color: const Color.fromARGB(255, 14, 12, 12),
                   ),
                   ref.watch(getPostCommentsProvider(widget.postID)).when(
                         data: (data) {
@@ -64,7 +61,17 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                               itemBuilder: (context, index) {
                                 final comment = data[index];
 
-                                return CommentCard(comment: comment);
+                                return Column(
+                                  children: [
+                                    CommentCard(comment: comment),
+                                    Container(
+                                      height: 7,
+                                      width: double.infinity,
+                                      color:
+                                          const Color.fromARGB(255, 14, 12, 12),
+                                    )
+                                  ],
+                                );
                               },
                             ),
                           );
@@ -73,7 +80,22 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
                           return Text(error.toString());
                         },
                         loading: () => const Loader(),
-                      )
+                      ),
+                  TextField(
+                    onSubmitted: (value) => addComment(data),
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      fillColor: Colors.grey[900],
+                      hintText: 'Add a Comment',
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(
+                            5.0), // Slightly rounded border
+                      ),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
                 ],
               );
             },

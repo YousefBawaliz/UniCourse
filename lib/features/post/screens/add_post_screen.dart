@@ -17,70 +17,101 @@ class AddPostScreen extends ConsumerWidget {
     double iconSize = 60;
     final currentTheme = ref.watch(themeNotifierProvider);
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        GestureDetector(
-          onTap: () => navigateToAddPostTypeScreen(context, 'image'),
-          child: SizedBox(
-            height: cardHeightWidth,
-            width: cardHeightWidth,
-            child: Card(
-              color: currentTheme.colorScheme.background,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 16,
-              child: Center(
-                child: Icon(
-                  Icons.image_outlined,
-                  size: iconSize,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () => navigateToAddPostTypeScreen(context, 'image'),
+              child: SizedBox(
+                height: cardHeightWidth,
+                width: cardHeightWidth,
+                child: Card(
+                  color: currentTheme.colorScheme.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 16,
+                  child: Center(
+                    child: Icon(
+                      Icons.image_outlined,
+                      size: iconSize,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () => navigateToAddPostTypeScreen(context, 'text'),
-          child: SizedBox(
-            height: cardHeightWidth,
-            width: cardHeightWidth,
-            child: Card(
-              color: currentTheme.backgroundColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 16,
-              child: Center(
-                child: Icon(
-                  Icons.font_download,
-                  size: iconSize,
+            GestureDetector(
+              onTap: () => navigateToAddPostTypeScreen(context, 'text'),
+              child: SizedBox(
+                height: cardHeightWidth,
+                width: cardHeightWidth,
+                child: Card(
+                  color: currentTheme.colorScheme.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 16,
+                  child: Center(
+                    child: Icon(
+                      Icons.font_download,
+                      size: iconSize,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () => navigateToAddPostTypeScreen(context, 'link'),
-          child: SizedBox(
-            height: cardHeightWidth,
-            width: cardHeightWidth,
-            child: Card(
-              color: currentTheme.colorScheme.background,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              elevation: 16,
-              child: Center(
-                child: Icon(
-                  Icons.link_outlined,
-                  size: iconSize,
+            GestureDetector(
+              onTap: () => navigateToAddPostTypeScreen(context, 'link'),
+              child: SizedBox(
+                height: cardHeightWidth,
+                width: cardHeightWidth,
+                child: Card(
+                  color: currentTheme.colorScheme.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 16,
+                  child: Center(
+                    child: Icon(
+                      Icons.link_outlined,
+                      size: iconSize,
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: () => navigateToAddPostTypeScreen(context, 'resource'),
+              child: SizedBox(
+                height: cardHeightWidth,
+                width: cardHeightWidth,
+                child: Card(
+                  color: currentTheme.colorScheme.background,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  elevation: 16,
+                  child: Center(
+                    child: Icon(
+                      Icons.file_copy_outlined,
+                      size: iconSize,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        )
       ],
     );
   }

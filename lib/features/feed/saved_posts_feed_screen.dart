@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
-import 'package:uni_course/core/common/post_card.dart';
+import 'package:uni_course/features/post/widgets/post_card.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/features/post/controller/post_controller.dart';
 

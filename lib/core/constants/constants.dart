@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:uni_course/features/community/screens/posts_screen.dart';
+import 'package:uni_course/features/community/screens/resources_screen.dart';
 import 'package:uni_course/features/feed/feed_screen.dart';
 import 'package:uni_course/features/post/screens/add_post_screen.dart';
 
@@ -23,6 +25,9 @@ class Constants {
     FeedScreen(),
     AddPostScreen(),
   ];
+
+  //tabs for TabBar in community screen
+  static const communityTabs = [PostsScreen(), ResourcesScreen()];
 
   static const IconData up =
       IconData(0xe800, fontFamily: 'MyFlutterApp', fontPackage: null);
