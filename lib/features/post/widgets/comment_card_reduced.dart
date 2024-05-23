@@ -6,18 +6,18 @@ import 'package:uni_course/features/post/controller/post_controller.dart';
 import 'package:uni_course/features/post/screens/add_reply_screen.dart';
 import 'package:uni_course/models/comment_model.dart';
 
-class CommentCard extends ConsumerStatefulWidget {
+class CommentCardR extends ConsumerStatefulWidget {
   final Comment comment;
-  const CommentCard({
+  const CommentCardR({
     super.key,
     required this.comment,
   });
 
   @override
-  _CommentCardState createState() => _CommentCardState();
+  _CommentCardRState createState() => _CommentCardRState();
 }
 
-class _CommentCardState extends ConsumerState<CommentCard> {
+class _CommentCardRState extends ConsumerState<CommentCardR> {
   void deleteComment(BuildContext context) {
     ref
         .read(postControllerProvider.notifier)
@@ -86,26 +86,6 @@ class _CommentCardState extends ConsumerState<CommentCard> {
                       : const SizedBox(),
                 ],
               )
-            ],
-          ),
-          Row(
-            children: [
-              InkWell(
-                onTap: () {
-                  navigateToReplyScreen(context);
-                },
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        navigateToReplyScreen(context);
-                      },
-                      icon: const Icon(Icons.reply),
-                    ),
-                    const Text('Reply'),
-                  ],
-                ),
-              ),
             ],
           ),
         ],

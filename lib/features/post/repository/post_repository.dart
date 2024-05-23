@@ -8,6 +8,7 @@ import 'package:uni_course/core/type_defs.dart';
 import 'package:uni_course/models/comment_model.dart';
 import 'package:uni_course/models/community_model.dart';
 import 'package:uni_course/models/post_model.dart';
+import 'package:uni_course/models/reply_model.dart';
 
 //provider to be provided to post_controller
 final postRepositoryProvider = Provider((ref) {
@@ -31,6 +32,9 @@ class PostRepository {
   //getter to get the savedPosts collection from Firebase
   final CollectionReference _savedPosts =
       FirebaseFirestore.instance.collection('savedPosts');
+
+  final CollectionReference _replies =
+      FirebaseFirestore.instance.collection('replies');
 
   //function to add a post to fireBase
   FutureVoid addPost(Post post) async {
@@ -186,6 +190,40 @@ class PostRepository {
     return _comments.where('postId', isEqualTo: postId).snapshots().map(
         (event) => event.docs
             .map((e) => Comment.fromMap(e.data() as Map<String, dynamic>))
+            .toList());
+  }
+
+  FutureVoid deleteComment(Comment comment) async {
+    try {
+      return right(_comments.doc(comment.id).delete());
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Stream<Comment> getCommentById(String commentId) {
+    return _comments
+        .doc(commentId)
+        .snapshots()
+        .map((event) => Comment.fromMap(event.data() as Map<String, dynamic>));
+  }
+
+  FutureVoid addReply(Reply reply) async {
+    try {
+      return right(_replies.doc(reply.id).set(reply.toMap()));
+    } on FirebaseException catch (e) {
+      throw e.message!;
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  Stream<List<Reply>> fetchReplies(String commentID) {
+    return _replies.where('commentID', isEqualTo: commentID).snapshots().map(
+        (event) => event.docs
+            .map((e) => Reply.fromMap(e.data() as Map<String, dynamic>))
             .toList());
   }
 

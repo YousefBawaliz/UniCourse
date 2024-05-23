@@ -14,6 +14,7 @@ import 'package:uni_course/features/user_profile/controller/user_profile_control
 import 'package:uni_course/models/comment_model.dart';
 import 'package:uni_course/models/community_model.dart';
 import 'package:uni_course/models/post_model.dart';
+import 'package:uni_course/models/reply_model.dart';
 import 'package:uuid/uuid.dart';
 import 'package:uni_course/core/utils.dart';
 
@@ -48,6 +49,11 @@ final getPostCommentsProvider = StreamProvider.family((ref, String postId) {
   return postController.fetchComments(postId);
 });
 
+final getCommentByIdProvider = StreamProvider.family((ref, String commentId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.getCommentById(commentId);
+});
+
 //provider to get saved posts
 final getSavedPostsProvider = StreamProvider.family((ref, String userId) {
   final postController = ref.watch(postControllerProvider.notifier);
@@ -59,6 +65,12 @@ final getSavedPostsProvider = StreamProvider.family((ref, String userId) {
 final getPostsByIdProvider = StreamProvider.family((ref, List<String> postIds) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.getPostsById(postIds);
+});
+
+//provider to get replies
+final getRepliesProvider = StreamProvider.family((ref, String commentId) {
+  final postController = ref.watch(postControllerProvider.notifier);
+  return postController.fetchReplies(commentId);
 });
 
 class PostController extends StateNotifier<bool> {
@@ -283,6 +295,15 @@ class PostController extends StateNotifier<bool> {
     );
   }
 
+  void deleteComment(Comment comment, BuildContext context) async {
+    final res = await _postRepository.deleteComment(comment);
+    _ref.read(userProfileControllerProvider.notifier);
+    res.fold(
+      (l) => null,
+      (r) => showSnackBar(context, "comment deleted successfully!"),
+    );
+  }
+
   /// Upvotes a post.
   ///
   /// This method takes a [post] object and upvotes it by the current user.
@@ -336,11 +357,44 @@ class PostController extends StateNotifier<bool> {
     );
   }
 
+  void addReply({
+    required BuildContext context,
+    required String text,
+    required Comment comment,
+  }) async {
+    final user = _ref.read(userProvider)!;
+    final res = await _postRepository.addReply(
+      Reply(
+        id: const Uuid().v1(),
+        text: text,
+        createdAt: DateTime.now(),
+        commentID: comment.id,
+        username: user.name,
+        profilePic: user.profilePic,
+      ),
+    );
+    _ref
+        .read(userProfileControllerProvider.notifier)
+        .updateUserKarma(UserKarma.comment);
+    res.fold(
+      (l) => showSnackBar(context, l.message),
+      (r) => null,
+    );
+  }
+
   /// Fetches the comments for a given post.
   ///
   /// Returns a stream of lists of [Comment] objects.
   Stream<List<Comment>> fetchComments(String postId) {
     return _postRepository.fetchComments(postId);
+  }
+
+  Stream<Comment> getCommentById(String commentId) {
+    return _postRepository.getCommentById(commentId);
+  }
+
+  Stream<List<Reply>> fetchReplies(String commentId) {
+    return _postRepository.fetchReplies(commentId);
   }
 
   void savePost({

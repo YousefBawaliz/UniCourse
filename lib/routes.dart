@@ -12,9 +12,11 @@ import 'package:uni_course/features/home/screens/home_screen.dart';
 import 'package:uni_course/features/auth/sceen/login_screen.dart';
 import 'package:uni_course/features/post/screens/add_post_screen.dart';
 import 'package:uni_course/features/post/screens/add_post_type_screen.dart';
+import 'package:uni_course/features/post/screens/add_reply_screen.dart';
 import 'package:uni_course/features/post/screens/comment_screen.dart';
 import 'package:uni_course/features/user_profile/screens/edit_profile_screen.dart';
 import 'package:uni_course/features/user_profile/screens/user_profile_screen.dart';
+import 'package:uni_course/models/comment_model.dart';
 
 final loggedOutRoute = RouteMap(routes: {
   '/': (route) => const MaterialPage(child: LogInScreen()),
@@ -42,4 +44,7 @@ final loggedInRoute = RouteMap(routes: {
       child: CommentScreen(postID: route.pathParameters['postID']!)),
   '/u/savedPosts': (route) => const MaterialPage(child: SavedPostsFeedScreen()),
   '/add-post': (route) => const MaterialPage(child: AddPostScreen()),
+  '/AddReplyScreen/:comment': (route) => MaterialPage(
+      child:
+          AddReplyScreen(comment: route.pathParameters['comment'] as Comment)),
 });

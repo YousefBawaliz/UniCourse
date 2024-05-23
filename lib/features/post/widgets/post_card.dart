@@ -14,7 +14,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 class PostCard extends ConsumerStatefulWidget {
   final Post post;
-  const PostCard({Key? key, required this.post}) : super(key: key);
+  const PostCard({super.key, required this.post});
 
   @override
   _PostCardState createState() => _PostCardState();

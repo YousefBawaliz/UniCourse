@@ -81,11 +81,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         height: 60,
         iconSize: 28,
         activeColor: currentTheme.iconTheme.color,
-        backgroundColor: currentTheme.backgroundColor,
+        backgroundColor: currentTheme.colorScheme.background,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: ''),
-          BottomNavigationBarItem(icon: Icon(Icons.notifications), label: ''),
         ],
         onTap: onPageChange,
         currentIndex: _page,
