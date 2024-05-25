@@ -33,6 +33,10 @@ class SearchPostsDelegate extends SearchDelegate {
     ];
   }
 
+  /// Fetches posts based on a search query.
+  ///
+  /// The [searchQuery] parameter is used to search for posts in the 'posts_index' index.
+  /// Returns a list of [Post] objects that match the search query.
   Future<List<Post>> fetchPosts(searchQuery) async {
     final query = algolia.instance.index('posts_index').query(searchQuery);
     final snap = await query.getObjects();

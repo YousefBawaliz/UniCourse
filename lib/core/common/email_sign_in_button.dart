@@ -1,33 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/constants/constants.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
 import 'package:uni_course/theme/pallete.dart';
 
-//we converted this into ConsumerWidget so we get access to ref and access the provider
-class SignInButton extends ConsumerWidget {
-  const SignInButton({super.key});
+class SignInButton2 extends ConsumerStatefulWidget {
+  final String email;
+  final String password;
+  const SignInButton2({super.key, required this.email, required this.password});
 
+  @override
+  ConsumerState<ConsumerStatefulWidget> createState() => _SignInButton2State();
+}
+
+class _SignInButton2State extends ConsumerState<SignInButton2> {
   //this calls the AuthController SignInWithGoogle method, which in turn calls the
   //AuthRepository SignInWithGoogle method
-  void signInWithGoogle(BuildContext context, WidgetRef ref) {
-    ref.read(authControllerProvider.notifier).SignInWithGoogle(context);
+  void signInWithEmailAndPassword(BuildContext context, WidgetRef ref) {
+    ref
+        .read(authControllerProvider.notifier)
+        .login(widget.email, widget.password, context);
+  }
+
+  void navigateToLogInScreen(BuildContext context) {
+    Routemaster.of(context).push('/');
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(18),
       child: ElevatedButton.icon(
         onPressed: () {
-          return signInWithGoogle(context, ref);
+          signInWithEmailAndPassword(context, ref);
         },
-        icon: Image.asset(
-          Constants.google,
-          width: 35,
-        ),
+        icon: Container(),
         label: const Text(
-          "Continue with google",
+          "log in",
           style: TextStyle(fontSize: 18),
         ),
         style: ElevatedButton.styleFrom(

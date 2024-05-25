@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:routemaster/routemaster.dart';
+import 'package:uni_course/features/auth/sceen/email_log_in_screen.dart';
 import 'package:uni_course/features/community/screens/add_mods_screen.dart';
 import 'package:uni_course/features/community/screens/community_screen.dart';
 import 'package:uni_course/features/community/screens/create_community_screen.dart';
@@ -47,4 +48,5 @@ final loggedInRoute = RouteMap(routes: {
   '/AddReplyScreen/:comment': (route) => MaterialPage(
       child:
           AddReplyScreen(comment: route.pathParameters['comment'] as Comment)),
+  '/sign-in': (route) => const MaterialPage(child: SignInScreen()),
 });

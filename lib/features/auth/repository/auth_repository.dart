@@ -10,6 +10,7 @@ import 'package:uni_course/core/constants/firebase_constants.dart';
 import 'package:uni_course/core/failure.dart';
 import 'package:uni_course/core/providers/firebase_providers.dart';
 import 'package:uni_course/core/type_defs.dart';
+import 'package:uni_course/core/utils.dart';
 import 'package:uni_course/models/user_model.dart';
 
 final authRepositoryProvider = Provider(
@@ -88,8 +89,67 @@ class AuthRepository {
       return right(
           userModel); //right means success, according to FutureEither type definition
     } on FirebaseException catch (e) {
+      print(e.message!);
       throw e
           .message!; //throwing it to the next catch block, and then it will return left as a sign of failure
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<UserModel> signUpWithEmailAndPassword(
+      String email, String password, String name) async {
+    try {
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      UserModel userModel;
+
+      //check if the user is a new user
+      if (userCredential.additionalUserInfo!.isNewUser) {
+        //we're gonna use this model to pass it into the fireStore database later on when the user signs up for the first time.
+        userModel = UserModel(
+          name: name,
+          profilePic: userCredential.user!.photoURL ?? Constants.avatarDefault,
+          banner: Constants.bannerDefault,
+          uid: userCredential.user!.uid,
+          isAuthenticated: true,
+          karma: 0,
+          awards: [],
+        );
+
+        //we use the user uid as a unique identifier for the user document inside the users collection
+        await _users.doc(userCredential.user!.uid).set(userModel.toMap());
+      } else {
+        //first: The first element of this stream, only returns a Future, hence why we use await
+        //Stops listening to this stream after the first element has been received.
+        userModel = await getUserData(userCredential.user!.uid).first;
+      }
+
+      return right(
+          userModel); //right means success, according to FutureEither type definition
+    } on FirebaseException catch (e) {
+      print(e.message!);
+      throw e
+          .message!; //throwing it to the next catch block, and then it will return left as a sign of failure
+    } catch (e) {
+      return left(Failure(e.toString()));
+    }
+  }
+
+  FutureEither<UserModel> signInWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      print(userCredential.user!.uid);
+      UserModel userModel = await getUserData(userCredential.user!.uid).first;
+
+      return right(userModel);
+    } on FirebaseException catch (e) {
+      throw e.message!;
     } catch (e) {
       return left(Failure(e.toString()));
     }

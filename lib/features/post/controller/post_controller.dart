@@ -60,8 +60,7 @@ final getSavedPostsProvider = StreamProvider.family((ref, String userId) {
   return postController.fetchSavedPosts(userId);
 });
 
-///provider to get saved posts as Post
-///why you ask? becuase i'm very lazy to refactor the code
+///provider to get multiple posts by their Ids
 final getPostsByIdProvider = StreamProvider.family((ref, List<String> postIds) {
   final postController = ref.watch(postControllerProvider.notifier);
   return postController.getPostsById(postIds);

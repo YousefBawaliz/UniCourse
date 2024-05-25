@@ -6,6 +6,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/utils.dart';
 import 'package:uni_course/features/auth/repository/auth_repository.dart';
 import 'package:uni_course/models/user_model.dart';
@@ -26,7 +27,8 @@ final authControllerProvider = StateNotifierProvider<AuthController, bool>(
 );
 
 //provider that notifies about changes to the user's sign-in state (such as sign-in or sign-out).
-//will be used in main.dart materilaApp routing
+//will be used in main.dart materilaApp routing, to route the user to home if he's already signed in,
+//or to logIn screen if he's not signed in.
 final authStateChangeProvider = StreamProvider((ref) {
   final authController = ref.watch(authControllerProvider
       .notifier); //we access the AuthController class itself using .notifier
@@ -74,6 +76,54 @@ class AuthController extends StateNotifier<bool> {
       //r returns UserModel, state is the state of UserModel before we udpate it.
       (r) => _ref.read(userProvider.notifier).update((state) => r),
     );
+  }
+
+  void signup(
+      String email, String password, String name, BuildContext context) async {
+    state = true;
+    try {
+      final user = await _authRepository.signUpWithEmailAndPassword(
+          email, password, name);
+
+      user.fold(
+        (l) {
+          showSnackBar(context, l.message);
+          print(l.message);
+        },
+        (r) {
+          _ref.read(userProvider.notifier).update((state) => r);
+          showSnackBar(context, "Signed up successfully!");
+          Routemaster.of(context).pop();
+        },
+      );
+    } catch (e) {
+      print(e);
+      showSnackBar(context, e.toString());
+    } finally {
+      state = false;
+    }
+  }
+
+  void login(String email, String password, BuildContext context) async {
+    state = true;
+    try {
+      final user =
+          await _authRepository.signInWithEmailAndPassword(email, password);
+
+      user.fold(
+        (l) => showSnackBar(context, l.message),
+        (r) {
+          _ref.read(userProvider.notifier).update((state) => r);
+          showSnackBar(context, "log in successful!");
+          Routemaster.of(context).pop();
+        },
+      );
+    } catch (e) {
+      print(e);
+      showSnackBar(context, e.toString());
+    } finally {
+      state = false;
+    }
   }
 
   void logout() async {

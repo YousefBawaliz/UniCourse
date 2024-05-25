@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:uni_course/core/common/sign_in_button.dart';
+import 'package:routemaster/routemaster.dart';
+import 'package:uni_course/core/common/google_sign_in_button.dart';
 import 'package:uni_course/core/constants/constants.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
+import 'package:uni_course/features/auth/sceen/email_log_in_screen.dart';
+import 'package:uni_course/features/auth/sceen/email_sign_up_screen.dart';
+import 'package:uni_course/theme/pallete.dart';
 
 class LogInScreen extends ConsumerWidget {
   const LogInScreen({super.key});
 
+  void navigateToLogInScreen(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SignInScreen(),
+    ));
+  }
+
+  void navigateToSignUpScreen(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => const SignUpScreen(),
+    ));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     //to render content conditionally based on sign in status
-    final _isLoading = ref.watch(authControllerProvider);
+    final isLoading = ref.watch(authControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Image.asset(
-          Constants.logoPath,
-          height: kToolbarHeight,
-        ),
+        // title: Image.asset(
+        //   Constants.logoPath,
+        //   height: kToolbarHeight * 2,
+        //   width: kToolbarHeight * 2,
+        // ),
         actions: [
           TextButton(
             onPressed: () {},
@@ -29,7 +46,7 @@ class LogInScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: _isLoading
+      body: isLoading
           ? const Center(
               child: CircularProgressIndicator(),
             )
@@ -58,6 +75,32 @@ class LogInScreen extends ConsumerWidget {
                   ),
                 ),
                 const SignInButton(),
+                // continue with email button,
+                Padding(
+                  padding: const EdgeInsets.all(18),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      navigateToLogInScreen(context);
+                    },
+                    icon: const Icon(Icons.email),
+                    label: const Text(
+                      "Continue with Email",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Pallete.greyColor,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      navigateToSignUpScreen(context);
+                    },
+                    child: Text("Don't have an account? Sign up"))
               ],
             ),
     );

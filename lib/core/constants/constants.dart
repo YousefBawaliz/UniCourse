@@ -9,8 +9,8 @@ class Constants {
   // static const loginEmote = 'assets/images/loginEmote.png';
   static const google = 'assets/images/google.png';
 
-  static const loginEmote = 'assets/images/U.png';
-  static const logoPath = 'assets/images/U.png';
+  static const loginEmote = 'assets/images/U3.png';
+  static const logoPath = 'assets/images/U_no_bg.png';
 
   static const bannerDefault =
       'https://thumbs.dreamstime.com/b/abstract-stained-pattern-rectangle-background-blue-sky-over-fiery-red-orange-color-modern-painting-art-watercolor-effe-texture-123047399.jpg';
