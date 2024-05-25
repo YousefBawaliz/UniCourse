@@ -1,8 +1,10 @@
+import 'package:algolia/algolia.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:routemaster/routemaster.dart';
 import 'package:uni_course/core/common/error_text.dart';
 import 'package:uni_course/core/common/loader.dart';
+import 'package:uni_course/features/home/delegates/search_posts_delegate.dart';
 import 'package:uni_course/features/post/widgets/post_card.dart';
 import 'package:uni_course/core/enums/enums.dart';
 import 'package:uni_course/features/auth/controller/auth_controller.dart';
@@ -33,6 +35,15 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
         .joinCommunity(community, context);
   }
 
+  late Algolia algolia;
+  @override
+  void initState() {
+    algolia = Algolia.init(
+        applicationId: 'Z82KM4NWMD',
+        apiKey: '914b1e59286d6be5a21db4f2fb580fab');
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = ref.watch(userProvider)!;
@@ -57,7 +68,10 @@ class _CommunityScreenState extends ConsumerState<CommunityScreen> {
                             //pre built function that Shows a full screen search page and returns the search result selected by the user when the page is closed.
                             showSearch(
                                 context: context,
-                                delegate: SearchCommunityDelegate(ref: ref));
+                                delegate: SearchPostsDelegate(
+                                    ref: ref,
+                                    algolia: algolia,
+                                    currentCommunityName: widget.name));
                           },
                           icon: const Icon(Icons.search),
                         ),

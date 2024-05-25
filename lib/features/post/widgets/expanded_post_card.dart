@@ -218,6 +218,34 @@ class _ExpandedPostCardState extends ConsumerState<ExpandedPostCard> {
                                       UIDirection.uiDirectionHorizontal,
                                 ),
                               ),
+                            if (isTypeResource)
+                              GestureDetector(
+                                onTap: () {
+                                  launch(widget.post.link!);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Color.fromARGB(255, 58, 58, 58),
+                                  ),
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 15, vertical: 20),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.download),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        widget.post.title,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             if (isTypeText ||
                                 isTypeResource ||
                                 isTypeLink ||

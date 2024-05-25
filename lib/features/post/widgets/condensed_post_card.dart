@@ -12,15 +12,15 @@ import 'package:uni_course/models/post_model.dart';
 import 'package:uni_course/theme/pallete.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class PostCard extends ConsumerStatefulWidget {
+class CondensedPostCard extends ConsumerStatefulWidget {
   final Post post;
-  const PostCard({super.key, required this.post});
+  const CondensedPostCard({super.key, required this.post});
 
   @override
   _PostCardState createState() => _PostCardState();
 }
 
-class _PostCardState extends ConsumerState<PostCard> {
+class _PostCardState extends ConsumerState<CondensedPostCard> {
   //buildContext is needed to diaply snackbar
   void deletePost(BuildContext context) async {
     ref.read(postControllerProvider.notifier).deletePost(widget.post, context);
@@ -147,29 +147,6 @@ class _PostCardState extends ConsumerState<PostCard> {
                                       ///
                                       ///save button:
                                       ///
-                                      AnimatedSwitcher(
-                                        duration:
-                                            const Duration(milliseconds: 250),
-                                        transitionBuilder: (Widget child,
-                                            Animation<double> animation) {
-                                          return ScaleTransition(
-                                            scale: animation,
-                                            child: child,
-                                          );
-                                        },
-                                        child: IconButton(
-                                          key: ValueKey<bool>(isPostSaved),
-                                          onPressed: () {
-                                            savePost();
-                                          },
-                                          icon: Icon(
-                                            isPostSaved
-                                                ? Icons.bookmark
-                                                : Icons.bookmark_border,
-                                            size: 30,
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 ),
@@ -193,9 +170,6 @@ class _PostCardState extends ConsumerState<PostCard> {
                                   ),
                                 ),
                               ),
-                            ),
-                            const SizedBox(
-                              height: 15,
                             ),
                             if (isTypeImage)
                               //display image in proportion to 35% of the device height
@@ -261,112 +235,7 @@ class _PostCardState extends ConsumerState<PostCard> {
                                 ),
                               ),
                             Row(
-                              children: [
-                                Row(
-                                  children: [
-                                    AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      transitionBuilder: (Widget child,
-                                          Animation<double> animation) {
-                                        return ScaleTransition(
-                                          scale: animation,
-                                          child: child,
-                                        );
-                                      },
-                                      child: IconButton(
-                                        key: ValueKey<bool>(widget.post.upvotes
-                                            .contains(user.uid)),
-                                        onPressed: () {
-                                          upvotePost();
-                                        },
-                                        icon: Icon(
-                                          Constants.up,
-                                          size: 30,
-                                          //if user upvoted, turn upvote button red
-                                          color: widget.post.upvotes
-                                                  .contains(user.uid)
-                                              ? Pallete.redColor
-                                              : null,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${widget.post.upvotes.length - widget.post.downvotes.length}',
-                                      style: const TextStyle(fontSize: 17),
-                                    ),
-                                    AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 400),
-                                      transitionBuilder: (Widget child,
-                                          Animation<double> animation) {
-                                        return ScaleTransition(
-                                          scale: animation,
-                                          child: child,
-                                        );
-                                      },
-                                      child: IconButton(
-                                        key: ValueKey<bool>(widget
-                                            .post.downvotes
-                                            .contains(user.uid)),
-                                        onPressed: () {
-                                          downvotePost();
-                                        },
-                                        icon: Icon(
-                                          Constants.down,
-                                          size: 30,
-                                          //if user upvoted, turn upvote button red
-                                          color: widget.post.downvotes
-                                                  .contains(user.uid)
-                                              ? Pallete.blueColor
-                                              : null,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        navigateToCommentScreen(context);
-                                      },
-                                      icon: const Icon(Icons.comment),
-                                    ),
-                                    Text(
-                                      '${widget.post.commentCount}',
-                                      style: const TextStyle(fontSize: 17),
-                                    ),
-                                  ],
-                                ),
-                                const Spacer(),
-                                //if user is a mod of the community, show the delete button
-                                ref
-                                    .watch(getCommunityByNameProvider(
-                                        widget.post.communityName))
-                                    .when(
-                                      data: (data) {
-                                        if (data.mods.contains(user.uid)) {
-                                          return IconButton(
-                                            onPressed: () {
-                                              deletePost(context);
-                                            },
-                                            icon: Icon(
-                                              Icons.delete,
-                                              color: Pallete.redColor,
-                                            ),
-                                          );
-                                        }
-                                        return const SizedBox();
-                                      },
-                                      loading: () =>
-                                          const CircularProgressIndicator(),
-                                      error: (error, stackTrace) => Text(
-                                        error.toString(),
-                                        style: const TextStyle(fontSize: 17),
-                                      ),
-                                    ),
-                              ],
+                              children: [],
                             ),
                           ],
                         ),
