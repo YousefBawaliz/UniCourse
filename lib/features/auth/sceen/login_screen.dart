@@ -36,15 +36,15 @@ class LogInScreen extends ConsumerWidget {
         //   height: kToolbarHeight * 2,
         //   width: kToolbarHeight * 2,
         // ),
-        actions: [
-          TextButton(
-            onPressed: () {},
-            child: const Text(
-              "Skip",
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ],
+        // actions: [
+        //   TextButton(
+        //     onPressed: () {},
+        //     child: const Text(
+        //       "Skip",
+        //       style: TextStyle(fontWeight: FontWeight.bold),
+        //     ),
+        //   ),
+        // ],
       ),
       body: isLoading
           ? const Center(
@@ -54,7 +54,7 @@ class LogInScreen extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 const Text(
                   "dive into your courses!",
@@ -65,13 +65,13 @@ class LogInScreen extends ConsumerWidget {
                       letterSpacing: 0.5),
                 ),
                 const SizedBox(
-                  height: 30,
+                  height: 25,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(12),
                   child: Image.asset(
                     Constants.loginEmote,
-                    height: 400,
+                    height: 380,
                   ),
                 ),
                 const SignInButton(),
@@ -100,7 +100,7 @@ class LogInScreen extends ConsumerWidget {
                     onPressed: () {
                       navigateToSignUpScreen(context);
                     },
-                    child: Text("Don't have an account? Sign up"))
+                    child: const Text("Don't have an account? Sign up"))
               ],
             ),
     );
