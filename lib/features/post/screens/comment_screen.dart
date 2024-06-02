@@ -40,6 +40,7 @@ class _CommentScreenState extends ConsumerState<CommentScreen> {
   Widget build(BuildContext context) {
     final currentTheme = ref.watch(themeNotifierProvider);
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Comments'),
       ),

@@ -259,11 +259,17 @@ class _ExpandedPostCardState extends ConsumerState<ExpandedPostCard> {
                                       ? const EdgeInsets.only(top: 12)
                                       : const EdgeInsets.symmetric(
                                           horizontal: 1),
-                                  child: Text(
-                                    widget.post.description ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
+                                  child: ConstrainedBox(
+                                    constraints:
+                                        const BoxConstraints(maxHeight: 400),
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        widget.post.description ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -23,14 +23,14 @@ class AddPostScreen extends ConsumerWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            "select post type",
-            style: TextStyle(
-              color: Color.fromARGB(206, 255, 255, 255),
-              fontSize: 24,
-              fontStyle: FontStyle.italic,
-            ),
-          ),
+          // const Text(
+          //   "select post type",
+          //   style: TextStyle(
+          //     color: Color.fromARGB(206, 255, 255, 255),
+          //     fontSize: 24,
+          //     fontStyle: FontStyle.italic,
+          //   ),
+          // ),
           Expanded(
             child: ListView(
               children: [

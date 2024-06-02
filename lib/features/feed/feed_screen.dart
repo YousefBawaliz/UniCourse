@@ -6,11 +6,16 @@ import 'package:uni_course/features/post/widgets/post_card.dart';
 import 'package:uni_course/features/community/controller/community_controller.dart';
 import 'package:uni_course/features/post/controller/post_controller.dart';
 
-class FeedScreen extends ConsumerWidget {
+class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConsumerStatefulWidget> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends ConsumerState<FeedScreen> {
+  @override
+  Widget build(BuildContext context) {
     //we're fetching the user communities to then provide them to userPostProvider.
     return ref.watch(userCommunitiesProvider).when(
           data: (data) => ref.watch(userPostProvider(data)).when(

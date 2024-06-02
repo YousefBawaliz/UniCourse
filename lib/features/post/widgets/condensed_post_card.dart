@@ -14,7 +14,12 @@ import 'package:url_launcher/url_launcher.dart';
 
 class CondensedPostCard extends ConsumerStatefulWidget {
   final Post post;
-  const CondensedPostCard({super.key, required this.post});
+  final Function() navigateToCommentScreen;
+  const CondensedPostCard({
+    super.key,
+    required this.post,
+    required this.navigateToCommentScreen,
+  });
 
   @override
   _PostCardState createState() => _PostCardState();
@@ -72,7 +77,8 @@ class _PostCardState extends ConsumerState<CondensedPostCard> {
 
     return GestureDetector(
       onTap: () {
-        navigateToCommentScreen(context);
+        // navigateToCommentScreen(context);
+        widget.navigateToCommentScreen();
       },
       child: Column(
         children: [
@@ -158,7 +164,9 @@ class _PostCardState extends ConsumerState<CondensedPostCard> {
                             ///
                             GestureDetector(
                               onTap: () {
-                                navigateToCommentScreen(context);
+                                // navigateToCommentScreen(context);
+
+                                widget.navigateToCommentScreen();
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 10.0),

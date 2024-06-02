@@ -78,15 +78,17 @@ class SearchPostsDelegate extends SearchDelegate {
               // return ListTile(
               //   title: Text(post.title),
               //   onTap: () async {
-              //     if (!context.mounted) return;
 
               //     navigateToCommentScreen(context, post.id);
-              //     if (!context.mounted) return;
 
-              //     await Future.delayed(const Duration(seconds: 1));
               //   },
               // );
-              return CondensedPostCard(post: post);
+              return CondensedPostCard(
+                post: post,
+                navigateToCommentScreen: () {
+                  navigateToCommentScreen(context, post.id);
+                },
+              );
             },
           );
         }
@@ -101,6 +103,6 @@ class SearchPostsDelegate extends SearchDelegate {
 
   void navigateToCommentScreen(BuildContext context, String? postID) {
     Routemaster.of(context).pop();
-    Routemaster.of(context).push('/post/${postID}/comments');
+    Routemaster.of(context).replace('/post/${postID}/comments');
   }
 }

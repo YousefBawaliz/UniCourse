@@ -195,6 +195,9 @@ class PostRepository {
 
   FutureVoid deleteComment(Comment comment) async {
     try {
+      _posts.doc(comment.postId).update({
+        'commentCount': FieldValue.increment(-1),
+      });
       return right(_comments.doc(comment.id).delete());
     } on FirebaseException catch (e) {
       throw e.message!;

@@ -19,7 +19,7 @@ final userCommunitiesProvider = StreamProvider((ref) {
   return ref.watch(communityControllerProvider.notifier).getUserCommunities();
 });
 
-//provider to get access to a community
+//provider to get access to a community object
 final getCommunityByNameProvider = StreamProvider.family((ref, String name) {
   return ref
       .watch(communityControllerProvider.notifier)

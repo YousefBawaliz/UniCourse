@@ -130,6 +130,7 @@ class _AddPostTypeScreenState extends ConsumerState<AddPostTypeScreen> {
     return PopScope(
       canPop: true,
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leading: BackButton(
             onPressed: () {

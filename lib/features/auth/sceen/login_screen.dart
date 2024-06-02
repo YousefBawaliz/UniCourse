@@ -31,20 +31,6 @@ class LogInScreen extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        // title: Image.asset(
-        //   Constants.logoPath,
-        //   height: kToolbarHeight * 2,
-        //   width: kToolbarHeight * 2,
-        // ),
-        // actions: [
-        //   TextButton(
-        //     onPressed: () {},
-        //     child: const Text(
-        //       "Skip",
-        //       style: TextStyle(fontWeight: FontWeight.bold),
-        //     ),
-        //   ),
-        // ],
       ),
       body: isLoading
           ? const Center(

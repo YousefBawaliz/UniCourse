@@ -67,6 +67,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               ),
             ),
             TextField(
+              obscureText: true,
               controller: _passwordController,
               decoration: const InputDecoration(
                 labelText: 'Password',
