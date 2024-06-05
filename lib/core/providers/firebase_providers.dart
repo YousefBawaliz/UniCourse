@@ -23,5 +23,10 @@ final storageProvider = Provider((ref) {
 });
 
 final googleSignInProvider = Provider((ref) {
-  return GoogleSignIn();
+  return GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 });

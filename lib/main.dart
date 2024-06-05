@@ -55,6 +55,7 @@ class _MyAppState extends ConsumerState<MyApp> {
     //Performs an action based on the state of the [AsyncValue]. All cases are required, which allows returning a non-nullable value.
     return ref.watch(authStateChangeProvider).when(
           data: (data) => MaterialApp.router(
+            key: ValueKey(data?.uid),
             debugShowCheckedModeBanner: false,
             title: 'UniCourse',
             theme: ref.watch(themeNotifierProvider),

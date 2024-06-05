@@ -25,11 +25,11 @@ final authRepositoryProvider = Provider(
 
 class AuthRepository {
   //since they are private we just initilize them here, we don't want them to be accessed outside of this class
-  const AuthRepository(
-      {required FirebaseFirestore firestore,
-      required FirebaseAuth auth,
-      required GoogleSignIn googleSignIn})
-      : _auth = auth,
+  const AuthRepository({
+    required FirebaseFirestore firestore,
+    required FirebaseAuth auth,
+    required GoogleSignIn googleSignIn,
+  })  : _auth = auth,
         _firestore = firestore,
         _googleSignIn = googleSignIn;
   //firebase services needed for authentication
