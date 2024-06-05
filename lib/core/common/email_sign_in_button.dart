@@ -18,6 +18,8 @@ class _SignInButton2State extends ConsumerState<SignInButton2> {
   //this calls the AuthController SignInWithGoogle method, which in turn calls the
   //AuthRepository SignInWithGoogle method
   void signInWithEmailAndPassword(BuildContext context, WidgetRef ref) {
+    print("email: ${widget.email}");
+    print("password: ${widget.password}");
     ref
         .read(authControllerProvider.notifier)
         .login(widget.email, widget.password, context);

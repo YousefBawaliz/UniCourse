@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uni_course/core/common/email_sign_in_button.dart';
 import 'package:uni_course/core/utils.dart';
+import 'package:uni_course/features/auth/controller/auth_controller.dart';
 
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
@@ -13,8 +14,8 @@ class SignInScreen extends ConsumerStatefulWidget {
 }
 
 class _SignInScreenState extends ConsumerState<SignInScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -23,28 +24,47 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     super.dispose();
   }
 
-  late final FirebaseAuth _auth;
+  String email = '';
+  String password = '';
 
   @override
   void initState() {
-    _auth = FirebaseAuth.instance;
     super.initState();
+
+    _emailController.addListener(() {
+      setState(() {
+        email = _emailController.text;
+      });
+    });
+
+    _passwordController.addListener(() {
+      setState(() {
+        password = _passwordController.text;
+      });
+    });
   }
 
   // EMAIL LOGIN
-  Future<void> loginWithEmail({
-    required String email,
-    required String password,
-    required BuildContext context,
-  }) async {
-    try {
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-    } on FirebaseAuthException catch (e) {
-      showSnackBar(context, e.message!); // Displaying the error message
-    }
+  // Future<void> loginWithEmail({
+  //   required String email,
+  //   required String password,
+  //   required BuildContext context,
+  // }) async {
+  //   try {
+  //     await _auth.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     print(email);
+  //     print(password);
+  //   } on FirebaseAuthException catch (e) {
+  //     showSnackBar(context, e.message!); // Displaying the error message
+  //   }
+  // }
+
+  void signInWithEmailAndPassword(BuildContext context, WidgetRef ref,
+      String email, String password, String userName) {
+    ref.read(authControllerProvider.notifier).login(email, password, context);
   }
 
   @override
